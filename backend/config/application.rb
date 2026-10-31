@@ -12,7 +12,7 @@ module Backend
     config.api_only = true
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore,
-      key: 'promps_management_app',
+      key: "promps_management_app",
       same_site: Rails.env.production? ? :none : :lax,
       secure: Rails.env.production?
   end

@@ -7,16 +7,16 @@ module Api
         if user && user.authenticate(params[:password])
           reset_session
           session[:user_id] = user.id # セッションにユーザーIDを保存
-          render json: { status: :ok, message: 'Logged in successfully', user: { id: user.id, name: user.name, email: user.email } }
+          render json: { status: :ok, message: "Logged in successfully", user: { id: user.id, name: user.name, email: user.email } }
         else
-          render json: { status: :unauthorized, message: 'Invalid email or password' }, status: :unauthorized
+          render json: { status: :unauthorized, message: "Invalid email or password" }, status: :unauthorized
         end
       end
 
       # ログアウト
       def destroy
         reset_session
-        render json: { status: :ok, message: 'Logged out successfully' }
+        render json: { status: :ok, message: "Logged out successfully" }
       end
 
       # 現在ログインしているユーザーの確認

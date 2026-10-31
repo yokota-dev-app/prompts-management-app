@@ -27,7 +27,7 @@ RSpec.describe "Api::V1 prompts", type: :request do
         get "/api/v1/prompts"
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.map { |p| p["id"] }).to eq([mine.id])
+        expect(response.parsed_body.map { |p| p["id"] }).to eq([ mine.id ])
         expect(response.parsed_body.first).to include("title" => mine.title, "content" => "my content", "author" => user.name)
       end
 

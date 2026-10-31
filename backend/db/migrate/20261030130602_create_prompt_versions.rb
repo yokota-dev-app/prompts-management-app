@@ -5,10 +5,10 @@ class CreatePromptVersions < ActiveRecord::Migration[8.1]
       t.text :content, null: false
       t.jsonb :variable_settings, null: false, default: {}
       t.references :prompt, foreign_key: true, null: false
-      
+
       t.timestamps
 
-      t.index [:prompt_id, :version_number], unique: true
+      t.index [ :prompt_id, :version_number ], unique: true
     end
   end
 end

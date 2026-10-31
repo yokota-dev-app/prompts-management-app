@@ -12,7 +12,7 @@ module Api
       # 自分のプロンプトの詳細
       def show
         prompt = current_user.prompts.includes(:prompt_versions).find_by(id: params[:id])
-        return render json: { errors: ['プロンプトが見つかりません'] }, status: :not_found unless prompt
+        return render json: { errors: [ "プロンプトが見つかりません" ] }, status: :not_found unless prompt
 
         render json: prompt_json(prompt)
       end
@@ -36,7 +36,7 @@ module Api
       # プロンプト更新（内容や変数が変わった場合は新しいバージョンを追加）
       def update
         prompt = current_user.prompts.includes(:prompt_versions).find_by(id: params[:id])
-        return render json: { errors: ['プロンプトが見つかりません'] }, status: :not_found unless prompt
+        return render json: { errors: [ "プロンプトが見つかりません" ] }, status: :not_found unless prompt
 
         latest = prompt.prompt_versions.max_by(&:version_number)
         content = prompt_params[:content]
@@ -65,7 +65,7 @@ module Api
       # プロンプト削除（バージョンも一緒に削除）
       def destroy
         prompt = current_user.prompts.find_by(id: params[:id])
-        return render json: { errors: ['プロンプトが見つかりません'] }, status: :not_found unless prompt
+        return render json: { errors: [ "プロンプトが見つかりません" ] }, status: :not_found unless prompt
 
         prompt.destroy!
         head :no_content
@@ -96,7 +96,7 @@ module Api
       end
 
       def require_login
-        render json: { errors: ['ログインが必要です'] }, status: :unauthorized unless current_user
+        render json: { errors: [ "ログインが必要です" ] }, status: :unauthorized unless current_user
       end
     end
   end
