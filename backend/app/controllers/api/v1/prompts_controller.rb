@@ -19,12 +19,8 @@ module Api
 
       # プロンプト作成（初版のバージョンも同時に保存）
       def create
-        prompt = current_user.prompts.new(prompt_params.slice(:title, :description, :is_public))
-        prompt.prompt_versions.build(
-          version_number: 1,
-          content: prompt_params[:content],
-          variable_settings: prompt_params[:variable_settings] || {}
-        )
+        prompt = current_user.prompts.new(prompt_attributes)
+        prompt.build_first_version(content: prompt_params[:content], variable_settings: variable_settings)
 
         if prompt.save
           render json: { id: prompt.id }, status: :created
@@ -38,24 +34,11 @@ module Api
         prompt = current_user.prompts.includes(:prompt_versions).find_by(id: params[:id])
         return render json: { errors: [ "プロンプトが見つかりません" ] }, status: :not_found unless prompt
 
-        latest = prompt.prompt_versions.max_by(&:version_number)
-        content = prompt_params[:content]
-        variable_settings = prompt_params[:variable_settings]&.to_h || {}
+        prompt.assign_attributes(prompt_attributes)
+        prompt.add_version_if_changed(content: prompt_params[:content], variable_settings: variable_settings)
+        prompt.updated_at = Time.current
 
-        saved = Prompt.transaction do
-          prompt.assign_attributes(prompt_params.slice(:title, :description, :is_public))
-          if latest.nil? || latest.content != content || latest.variable_settings != variable_settings
-            prompt.prompt_versions.build(
-              version_number: (latest&.version_number || 0) + 1,
-              content: content,
-              variable_settings: variable_settings
-            )
-          end
-          prompt.updated_at = Time.current
-          prompt.save
-        end
-
-        if saved
+        if prompt.save
           render json: { id: prompt.id }
         else
           render json: { errors: prompt.errors.full_messages }, status: :unprocessable_entity
@@ -74,7 +57,7 @@ module Api
       private
 
       def prompt_json(prompt)
-        latest = prompt.prompt_versions.max_by(&:version_number)
+        latest = prompt.latest_version
         {
           id: prompt.id,
           title: prompt.title,
@@ -85,6 +68,14 @@ module Api
           author: current_user.name,
           updated_at: prompt.updated_at
         }
+      end
+
+      def prompt_attributes
+        prompt_params.slice(:title, :description, :is_public)
+      end
+
+      def variable_settings
+        prompt_params[:variable_settings]&.to_h || {}
       end
 
       def prompt_params
