@@ -22,7 +22,9 @@ services:
       - db
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/backend_development
-
+    tty: true
+    stdin_open: true
+    
   frontend:
     build: ./frontend
     command: npm run dev -- --host
