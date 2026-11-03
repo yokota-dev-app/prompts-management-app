@@ -37,8 +37,8 @@ gem "rack-cors"
 gem "diff-lcs"
 
 group :development do
-  gem 'pry'
-  gem 'pry-byebug'
+  gem "pry"
+  gem "pry-byebug"
 end
 
 group :development, :test do
