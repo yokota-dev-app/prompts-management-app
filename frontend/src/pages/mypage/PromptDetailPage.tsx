@@ -5,7 +5,7 @@ import type { PromptDetail } from '../../features/prompts/api';
 import PromptActions from '../../features/prompts/components/PromptActions';
 
 const VARIABLE_SPLIT_PATTERN = /\{\{\s*([^{}\s]+)\s*\}\}/;
-const detailSectionClasses = 'mx-auto grid w-full max-w-4xl gap-3 text-[#28252f] [&_h1]:m-0 [&_h1]:text-3xl [&_h2]:mt-2 [&_h2]:mb-0 [&_h2]:text-[#45424d] [&_h2]:text-base';
+const detailSectionClasses = 'mx-auto grid w-full min-w-0 max-w-4xl gap-3 text-[#28252f] [&_h1]:m-0 [&_h1]:text-3xl [&_h2]:mt-2 [&_h2]:mb-0 [&_h2]:text-[#45424d] [&_h2]:text-base';
 const variableInputClasses = 'h-10 rounded-lg border border-solid border-[#b9b4c7] bg-white px-3 py-0 text-[#28252f] [font-family:inherit] text-base [box-shadow:0_1px_2px_rgb(36_28_55/8%)] focus:border-[#5b46a0] focus:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] focus:[outline:none]';
 
 function extractVariables(content: string): string[] {
@@ -61,8 +61,8 @@ function PromptDetail({ id }: { id: string }) {
   return (
     <section className={detailSectionClasses}>
       <Link className="text-[#493b68] text-sm no-underline" to="/mypage">← マイプロンプトに戻る</Link>
-      <div className="flex items-center justify-between gap-3">
-        <h1>{prompt.title}</h1>
+      <div className="flex min-w-0 items-center justify-between gap-3">
+        <h1 className="min-w-0 [overflow-wrap:anywhere]">{prompt.title}</h1>
         <PromptActions
           promptId={prompt.id}
           title={prompt.title}
@@ -75,9 +75,9 @@ function PromptDetail({ id }: { id: string }) {
       <p className="m-0 text-[#85828c] text-sm">
         {prompt.isPublic ? '公開' : '非公開'} ・ {prompt.author} ・ 更新日 {prompt.updatedAt}
       </p>
-      {prompt.summary && <p className="m-0 text-base leading-relaxed">{prompt.summary}</p>}
+      {prompt.summary && <p className="m-0 text-base leading-relaxed [overflow-wrap:anywhere]">{prompt.summary}</p>}
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center justify-between gap-3">
         <h2>{showRaw ? 'プロンプト原文' : 'プロンプト内容（変数適用後）'}</h2>
         <button
           type="button"
