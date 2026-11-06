@@ -32,14 +32,14 @@ export default function Header() {
   return (
     <>
       <header className={HEADER}>
-        <Link className={BRAND} to="/" aria-label="PromptShelf ホーム">
+        <Link className={BRAND} to="/" aria-label="Prompts ホーム">
           <span className={BRAND_MARK} aria-hidden="true">
             <svg className="h-full w-full" viewBox="0 0 40 40" role="img">
               <rect className="fill-(--top-purple)" x="3" y="3" width="34" height="34" rx="11" />
               <path className="fill-none stroke-white stroke-2 stroke-linecap-round" d="M13 13h14M13 20h14M13 27h8" />
             </svg>
           </span>
-          <span>PromptShelf</span>
+          <span>Prompts</span>
         </Link>
 
         <nav className={ACTIONS} aria-label="アカウントメニュー">

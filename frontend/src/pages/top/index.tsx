@@ -70,7 +70,7 @@ function TopView() {
     <div className="overflow-hidden bg-white">
       <main>
         <section
-          className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-9 px-5 pt-14 pb-16 md:grid-cols-2 md:gap-6 md:px-8 md:pt-18 md:pb-20 lg:gap-20 lg:px-20 lg:pt-24"
+          className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-9 px-5 pt-14 pb-16 md:grid-cols-2 md:gap-2 md:px-8 md:pt-18 md:pb-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-2 lg:px-12 lg:pt-24"
           aria-labelledby="top-hero-title"
         >
           <div className="relative z-10">
@@ -79,17 +79,17 @@ function TopView() {
               プロンプトを、使い捨てにしない。
             </div>
             <h1
-              className="m-0 mt-6 mb-5 text-4xl leading-relaxed tracking-tight font-extrabold md:text-5xl lg:text-6xl"
+              className="m-0 mt-6 mb-5 text-2xl leading-relaxed tracking-tight font-extrabold md:text-3xl lg:text-4xl xl:text-5xl"
               id="top-hero-title"
             >
               いつもの仕事を、
               <br />
-              <span className="text-(--top-purple)">いつものプロンプト</span>で。
+              <span className="whitespace-nowrap"><span className="text-(--top-purple)">いつものプロンプト</span>で。</span>
             </h1>
             <p className="m-0 text-sm leading-loose text-[#777686] md:text-base">
               お気に入りのプロンプトをひとつに整理。
               <br />
-              変数や出力例と一緒に保存して、必要なときにすぐ使えます。
+              変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
               <PrimaryButton>
@@ -108,11 +108,13 @@ function TopView() {
             </p>
           </div>
 
-          <div className="flex aspect-video w-full max-w-xl items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-[#d1d5db] bg-[#f3f4f6]" aria-label="プロンプト管理画面のイメージ">
+          <div className="w-full" aria-label="プロンプト管理画面のイメージ">
             <img
-              src="/path/xxx.png" /* 画像のパス */
-              alt="プロンプト管理画面のプレースホルダー画像"
-              className="h-full w-full object-cover"
+              src="/src/assets/images/top_hero.jpg"
+              alt="Promptsのマイプロンプト画面"
+              width={1280}
+              height={760}
+              className="block h-auto w-full"
             />
           </div>
         </section>

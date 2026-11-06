@@ -89,11 +89,6 @@ export default function PromptForm({
   return (
     <form className="mx-auto grid w-full max-w-6xl gap-4" onSubmit={handleSubmit}>
       <h1 className="m-0 text-[#28252f] text-3xl">{heading}</h1>
-      <p className="m-0 text-sm text-[#66616f]">
-        <span className="mr-1 rounded-sm bg-[#fdecea] px-1.5 py-0.5 text-xs font-bold text-[#b42318]">必須</span>
-        は入力が必要な項目です
-      </p>
-
       {errors.length > 0 && (
         <ul className="m-0 rounded-lg border border-solid border-[#f3c7c2] bg-[#fff3f1] py-2.5 pr-3.5 pl-8 text-[#b42318] text-sm" role="alert">
           {errors.map((message) => (
@@ -113,7 +108,7 @@ export default function PromptForm({
       <label className={fieldClasses}>
         <span>説明</span>
         <textarea
-          className="min-h-20 resize-y px-3 py-3 leading-relaxed"
+          className="min-h-10 resize-y px-3 py-3 leading-relaxed"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
