@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import step1Image from "../../assets/images/step1_create_prompt.png";
+import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
 
 const buttonClasses =
   "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid border-transparent text-sm font-bold transition duration-200 hover:-translate-y-px";
@@ -51,6 +53,21 @@ const features = [
     title: "プロンプトを育てる",
     description:
       "更新したプロンプトを整理して保存。うまくいった形を、次の仕事でも再利用できます。",
+  },
+];
+
+const usageSteps = [
+  {
+    step: "Step1.",
+    title: "プロンプトを作成",
+    image: step1Image,
+    alt: "プロンプト作成画面",
+  },
+  {
+    step: "Step2.",
+    title: "プロンプトコピー＆AIツールにジャンプ",
+    image: step2Image,
+    alt: "プロンプトをコピーしてAIツールにジャンプする画面",
   },
 ];
 
@@ -137,6 +154,26 @@ function TopView() {
               </div>
             </div>
           ))}
+        </section>
+
+        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title">
+          <div className="mx-auto max-w-7xl">
+            <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
+              <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
+              <h2 className="mt-3 mb-0 text-2xl leading-normal tracking-tight md:text-3xl" id="top-usage-title">使い方</h2>
+            </div>
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8">
+              {usageSteps.map((step) => (
+                <article key={step.step}>
+                  <h3 className="mb-3 mt-0 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-base md:text-lg">
+                    <span className="text-sm font-bold text-[#7564d7]">{step.step}</span>
+                    {step.title}
+                  </h3>
+                  <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
+                </article>
+              ))}
+            </div>
+          </div>
         </section>
 
         <section className="bg-[#f9f8fc] px-5 pt-16 pb-16 md:px-8 md:pt-20 md:pb-24 lg:px-20" id="features" aria-labelledby="top-features-title">
