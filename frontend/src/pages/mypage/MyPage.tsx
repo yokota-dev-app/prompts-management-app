@@ -54,11 +54,12 @@ export default function MyPage() {
         </div>
         <div className="flex flex-[0_0_auto] items-start">
           <Link
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-solid border-[#34265b] bg-[#34265b] px-4 text-sm font-bold text-white transition-all duration-150 ease-in hover:-translate-y-0.5 hover:bg-[#463675] [&>span]:text-lg [&>span]:leading-none"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-solid border-[#34265b] bg-[#34265b] px-3 text-sm font-bold text-white transition-all duration-150 ease-in hover:-translate-y-0.5 hover:bg-[#463675] [&>span]:text-lg [&>span]:leading-none md:px-4"
             to="/mypage/create"
+            aria-label="プロンプト作成"
           >
             <span aria-hidden="true">＋</span>
-            プロンプト作成
+            <span className="hidden md:inline">プロンプト作成</span>
           </Link>
         </div>
       </div>
@@ -74,7 +75,7 @@ export default function MyPage() {
         </p>
       )}
       {!loading && !error && filteredPrompts.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filteredPrompts.map((prompt) => (
             <PromptCard
               key={prompt.id}
