@@ -161,7 +161,7 @@ function TopView() {
                     onClick={() => setActiveImage(step)}
                     aria-label={`${step.alt}を拡大表示`}
                   >
-                    <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
+                    <img className="block h-auto w-full rounded-lg border border-solid border-[#d8d3e8] bg-white [box-shadow:0_4px_16px_rgba(47,37,89,0.14)]" src={step.image} alt={step.alt} />
                   </button>
                 </article>
               ))}

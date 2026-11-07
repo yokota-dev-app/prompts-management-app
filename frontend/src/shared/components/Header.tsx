@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../features/auth/useAuth';
 
 const HEADER =
-  'flex h-auto min-h-18 flex-wrap items-center justify-between gap-4 border-b border-[#f0eff5] bg-[rgb(255_255_255/0.94)] px-5 py-3.5 md:flex-nowrap md:gap-4 md:px-8 md:py-0 lg:h-22 lg:gap-7 lg:px-20';
+  'sticky top-0 z-20 flex h-auto min-h-18 flex-wrap items-center justify-between gap-4 border-b border-[#f0eff5] bg-[rgb(255_255_255/0.94)] px-5 py-3.5 shadow-[0_3px_8px_rgb(36_28_55/8%)] backdrop-blur-md md:flex-nowrap md:gap-4 md:px-8 md:py-0 lg:h-22 lg:gap-7 lg:px-20';
 const BRAND =
   'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-extrabold tracking-tight md:text-3xl';
 const BRAND_MARK =
@@ -12,7 +12,7 @@ const ACTIONS = 'ml-auto flex items-center gap-2 md:gap-2.5';
 const BUTTON =
   'inline-flex min-h-10 items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid px-3 text-xs font-bold transition duration-200 hover:-translate-y-px md:min-h-12 md:px-5 md:text-sm';
 const BUTTON_QUIET =
-  `${BUTTON} hidden border-[#e8e6ef] bg-white text-[#4c4a5b] hover:bg-[#f8f7fc] sm:inline-flex`;
+  `${BUTTON} hidden border-[#c9c5d6] bg-white text-[#4c4a5b] shadow-[0_1px_3px_rgb(36_28_55/10%)] hover:border-[#a9a3be] hover:bg-[#f8f7fc] sm:inline-flex`;
 const BUTTON_DARK =
   `${BUTTON} border-transparent bg-[#292633] text-white hover:bg-[#3a3547]`;
 
