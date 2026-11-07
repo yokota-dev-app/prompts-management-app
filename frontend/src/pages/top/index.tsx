@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
@@ -56,6 +57,18 @@ function PrimaryButton({ children }: { children: ReactNode }) {
 }
 
 function TopView() {
+  const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
+  const imageDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = imageDialogRef.current;
+    if (activeImage && dialog && !dialog.open) {
+      dialog?.showModal();
+    } else if (dialog?.open) {
+      dialog.close();
+    }
+  }, [activeImage]);
+
   return (
     <div className="overflow-hidden bg-white">
       <main>
@@ -142,12 +155,56 @@ function TopView() {
                     <span className="text-xl font-bold text-[#7564d7]">{step.step}</span>
                     {step.title}
                   </h3>
-                  <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
+                  <button
+                    type="button"
+                    className="block w-full cursor-zoom-in border-0 bg-transparent p-0"
+                    onClick={() => setActiveImage(step)}
+                    aria-label={`${step.alt}を拡大表示`}
+                  >
+                    <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
+                  </button>
                 </article>
               ))}
             </div>
           </div>
         </section>
+
+        {activeImage && (
+          <dialog
+            ref={imageDialogRef}
+            className="fixed inset-0 m-0 grid h-dvh w-screen max-h-none max-w-none grid-rows-[3rem_minmax(0,1fr)] gap-2 border-0 bg-black/90 p-3 sm:p-5 backdrop:bg-black/90"
+            aria-label={activeImage.alt}
+            onClose={() => setActiveImage(null)}
+            onCancel={(event) => {
+              event.preventDefault();
+              setActiveImage(null);
+            }}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setActiveImage(null);
+            }}
+          >
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-solid border-white/60 bg-[#292633] text-3xl leading-none text-white cursor-pointer [box-shadow:0_2px_8px_rgb(0_0_0/40%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                onClick={() => setActiveImage(null)}
+                aria-label="画像を閉じる"
+                title="画像を閉じる"
+                autoFocus
+              >
+                ×
+              </button>
+            </div>
+            <div
+              className="flex min-h-0 items-center justify-center p-2 sm:p-4"
+              onClick={(event) => {
+                if (event.target === event.currentTarget) setActiveImage(null);
+              }}
+            >
+              <img className="max-h-full max-w-full object-contain" src={activeImage.image} alt={activeImage.alt} />
+            </div>
+          </dialog>
+        )}
 
         <section className="relative mx-4 my-12 overflow-hidden rounded-2xl bg-[linear-gradient(120deg,#f4f1ff,#faf8ff_55%,#f0f8f5)] px-5 py-12 text-center md:mx-auto md:my-20 md:max-w-6xl md:px-6 md:py-16">
           <div className="absolute -top-8 right-8 text-9xl text-[rgba(126,107,222,0.12)]" aria-hidden="true">✳</div>
