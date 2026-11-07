@@ -5,7 +5,7 @@ import { useAuth } from '../../features/auth/useAuth';
 const HEADER =
   'flex h-auto min-h-18 flex-wrap items-center justify-between gap-4 border-b border-[#f0eff5] bg-[rgb(255_255_255/0.94)] px-5 py-3.5 md:flex-nowrap md:gap-4 md:px-8 md:py-0 lg:h-22 lg:gap-7 lg:px-20';
 const BRAND =
-  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-extrabold tracking-tight md:text-xl';
+  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-extrabold tracking-tight md:text-3xl';
 const BRAND_MARK =
   'inline-flex h-8 w-8 md:h-9 md:w-9';
 const ACTIONS = 'ml-auto flex items-center gap-2 md:gap-2.5';

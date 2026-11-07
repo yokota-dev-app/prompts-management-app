@@ -20,7 +20,7 @@ const navLinkBase =
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `${navLinkBase} [&>span:last-child]:hidden ${isActive ? 'bg-[#f0eef5] text-[#34265b] font-bold' : 'text-[#55535d]'}`;
 const quickLink =
-  '[&_a]:flex [&_a]:items-center [&_a]:gap-2 [&_a]:p-2.5 [&_a]:text-[#4c4a52] [&_a]:text-sm [&_a:hover]:text-[#302058] [&_a_span:nth-child(2)]:flex-1';
+  '[&_a]:flex [&_a]:items-center [&_a]:gap-2 [&_a]:p-2.5 [&_a]:text-[#4c4a52] [&_a]:text-base [&_a:hover]:text-[#302058] [&_a_span:nth-child(2)]:flex-1';
 const logoutButton =
   'flex-[0_0_auto] min-h-10 whitespace-nowrap rounded-lg border border-solid border-transparent bg-[#292633] px-3 py-0 text-xs font-bold text-white cursor-pointer hover:bg-[#3a3547] sm:min-h-12 sm:px-5 sm:text-sm';
 
@@ -50,7 +50,7 @@ export default function DashboardLayout() {
         <Link
           className="mb-6 ml-0 flex items-center justify-center gap-3 whitespace-nowrap font-sans text-xl font-extrabold tracking-tight text-[#20212a] sm:mb-8 md:ml-1 md:justify-start md:text-2xl md:[&>span:last-child]:inline"
           to="/"
-          aria-label="PromptShelf ホーム"
+          aria-label="Prompts ホーム"
         >
           <span
             className="inline-flex h-9 w-9 shrink-0 [&_svg]:h-full [&_svg]:w-full [&_rect]:[fill:#6854d9] [&_path]:[fill:none] [&_path]:[stroke:white] [&_path]:[stroke-width:2.4] [&_path]:[stroke-linecap:round]"
@@ -61,7 +61,7 @@ export default function DashboardLayout() {
               <path d="M13 13h14M13 20h14M13 27h8" />
             </svg>
           </span>
-          <span className="hidden">PromptShelf</span>
+          <span className="hidden">Prompts</span>
         </Link>
 
         <nav className="mt-4 grid w-full gap-1.5 md:mt-6" aria-label="メインメニュー">
@@ -74,7 +74,7 @@ export default function DashboardLayout() {
 
         <div className="mx-0 mb-4 mt-5 h-px bg-[#e9e8ec] md:mb-5 md:mt-6" />
         <section
-          className={`${quickLink} hidden md:block [&_h2]:mb-2.5 [&_h2]:ml-2.5 [&_h2]:mt-0 [&_h2]:text-xs [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-widest [&_h2]:text-[#85838c]`}
+          className={`${quickLink} hidden md:block [&_h2]:mb-2.5 [&_h2]:ml-2.5 [&_h2]:mt-0 [&_h2]:text-base [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-widest [&_h2]:text-[#85838c]`}
           aria-labelledby="quick-links-heading"
         >
           <h2 id="quick-links-heading">クイックリンク</h2>
@@ -92,7 +92,7 @@ export default function DashboardLayout() {
           >
             {user?.name?.slice(0, 1) ?? 'G'}
           </span>
-          <span className="hidden overflow-hidden text-xs text-ellipsis whitespace-nowrap text-[#514f58] md:inline">
+          <span className="hidden overflow-hidden text-sm text-ellipsis whitespace-nowrap text-[#514f58] md:inline">
             {user?.name ?? 'ゲストユーザー'}
           </span>
         </div>

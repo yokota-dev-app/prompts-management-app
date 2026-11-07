@@ -46,7 +46,7 @@ export default function MyPage() {
           <div className="flex flex-wrap items-center gap-3">
             <h1 id="mypage-title">マイプロンプト</h1>
             {!loading && !error && (
-              <span className="whitespace-nowrap rounded-full border border-solid border-[#e9e6ef] bg-white px-3 py-2 text-xs text-[#66616f]">
+              <span className="whitespace-nowrap rounded-full border border-solid border-[#e9e6ef] bg-white px-3 py-2 text-sm text-[#66616f]">
                 {filteredPrompts.length} 件
               </span>
             )}

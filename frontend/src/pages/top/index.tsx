@@ -64,7 +64,7 @@ function TopView() {
           aria-labelledby="top-hero-title"
         >
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-solid border-[#e9e4ff] bg-[#f8f6ff] px-3 py-2 text-xs font-bold text-[#6552c5]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-solid border-[#e9e4ff] bg-[#f8f6ff] px-3 py-2 text-base font-bold text-[#6552c5]">
               <span className="h-2 w-2 rounded-full bg-[#8d7be9] [box-shadow:0_0_0_4px_#e9e4ff]" />
               プロンプトを、使い捨てにしない。
             </div>
@@ -76,21 +76,21 @@ function TopView() {
               <br />
               <span className="whitespace-nowrap"><span className="text-(--top-purple)">いつものプロンプト</span>で。</span>
             </h1>
-            <p className="m-0 text-sm leading-loose text-[#777686] md:text-base">
+            <p className="m-0 text-base leading-loose text-[#777686] md:text-base">
               お気に入りのプロンプトをひとつに整理。
               <br />
               変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
               <PrimaryButton>
-                無料で使い始める
+                無料で始める
                 <span aria-hidden="true">→</span>
               </PrimaryButton>
               <a className="text-sm font-bold text-[#5e5a70]" href="#how-to-use">
                 使い方を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
               </a>
             </div>
-            <p className="mt-5 mb-0 flex items-center gap-2 text-xs text-[#8a8997]">
+            <p className="mt-5 mb-0 flex items-center gap-2 text-base text-[#8a8997]">
               <svg className="h-4 w-4 fill-none stroke-[#58a887] stroke-2 stroke-linecap-round stroke-linejoin-round" viewBox="0 0 20 20" aria-hidden="true">
                 <path d="m4 10 4 4 8-9" />
               </svg>
@@ -132,14 +132,14 @@ function TopView() {
         <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
-              <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
+              <span className="text-base font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
               <h2 className="mt-3 mb-0 text-2xl leading-normal tracking-tight md:text-3xl" id="top-usage-title">使い方</h2>
             </div>
             <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8">
               {usageSteps.map((step) => (
                 <article key={step.step}>
-                  <h3 className="mb-3 mt-0 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-base md:text-lg">
-                    <span className="text-lg font-bold text-[#7564d7]">{step.step}</span>
+                  <h3 className="mb-3 mt-0 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xl md:text-lg">
+                    <span className="text-xl font-bold text-[#7564d7]">{step.step}</span>
                     {step.title}
                   </h3>
                   <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
@@ -151,10 +151,10 @@ function TopView() {
 
         <section className="relative mx-4 my-12 overflow-hidden rounded-2xl bg-[linear-gradient(120deg,#f4f1ff,#faf8ff_55%,#f0f8f5)] px-5 py-12 text-center md:mx-auto md:my-20 md:max-w-6xl md:px-6 md:py-16">
           <div className="absolute -top-8 right-8 text-9xl text-[rgba(126,107,222,0.12)]" aria-hidden="true">✳</div>
-          <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
+          <span className="text-base font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
           <h2 className="mt-4 mb-3 text-3xl leading-relaxed tracking-tight md:text-4xl">探す時間を減らして、<br />いい仕事に集中しよう。</h2>
-          <p className="mt-0 mb-6 text-sm text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
-          <PrimaryButton>無料で使い始める <span aria-hidden="true">→</span></PrimaryButton>
+          <p className="mt-0 mb-6 text-base text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
+          <PrimaryButton>無料で始める <span aria-hidden="true">→</span></PrimaryButton>
         </section>
       </main>
     </div>
