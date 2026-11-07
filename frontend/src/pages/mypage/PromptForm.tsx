@@ -58,7 +58,6 @@ export default function PromptForm({
   const [title, setTitle] = useState(initial?.title ?? '');
   const [description, setDescription] = useState(initial?.description ?? '');
   const [content, setContent] = useState(initial?.content ?? '');
-  const [isPublic, setIsPublic] = useState(initial?.isPublic ?? false);
   const [variableSettings, setVariableSettings] = useState<Record<string, VariableSetting>>(
     initial?.variableSettings ?? {},
   );
@@ -113,7 +112,7 @@ export default function PromptForm({
         title: title.trim(),
         description,
         content,
-        isPublic,
+        isPublic: false,
         variableSettings: submittedVariableSettings,
       });
     } catch (error) {
@@ -247,16 +246,10 @@ export default function PromptForm({
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-4 [&_select]:min-w-36">
-        <label className={fieldClasses}>
+        <div className={fieldClasses}>
           <span>公開設定</span>
-          <select
-            value={isPublic ? 'public' : 'private'}
-            onChange={(event) => setIsPublic(event.target.value === 'public')}
-          >
-            <option value="private">非公開</option>
-            <option value="public">公開</option>
-          </select>
-        </label>
+          <span className="text-sm font-normal text-[#28252f]">非公開</span>
+        </div>
         <div className="flex gap-3">
           <button type="button" className={`${actionButtonClasses} bg-[#ececf0] text-[#45424d]`} onClick={onCancel}>
             キャンセル
