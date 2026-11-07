@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import type { FormEvent } from 'react';
 import { isAxiosError } from 'axios';
 import type { CreatePromptInput } from '../../features/prompts/api';
 
@@ -59,9 +58,7 @@ export default function PromptForm({
   const variables = useMemo(() => extractVariables(content), [content]);
   const preview = useMemo(() => renderPreview(content, variableValues), [content, variableValues]);
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     const validationErrors: string[] = [];
     if (!title.trim()) validationErrors.push('タイトルを入力してください。');
     if (!content.trim()) validationErrors.push('プロンプト内容を入力してください。');
@@ -87,13 +84,8 @@ export default function PromptForm({
   };
 
   return (
-    <form className="mx-auto grid w-full max-w-6xl gap-4" onSubmit={handleSubmit}>
+    <form className="mx-auto grid w-full max-w-7xl gap-4" onSubmit={(event) => event.preventDefault()}>
       <h1 className="m-0 text-[#28252f] text-3xl">{heading}</h1>
-      <p className="m-0 text-sm text-[#66616f]">
-        <span className="mr-1 rounded-sm bg-[#fdecea] px-1.5 py-0.5 text-xs font-bold text-[#b42318]">必須</span>
-        は入力が必要な項目です
-      </p>
-
       {errors.length > 0 && (
         <ul className="m-0 rounded-lg border border-solid border-[#f3c7c2] bg-[#fff3f1] py-2.5 pr-3.5 pl-8 text-[#b42318] text-sm" role="alert">
           {errors.map((message) => (
@@ -113,7 +105,7 @@ export default function PromptForm({
       <label className={fieldClasses}>
         <span>説明</span>
         <textarea
-          className="min-h-20 resize-y px-3 py-3 leading-relaxed"
+          className="min-h-10 resize-y px-3 py-3 leading-relaxed"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
@@ -178,7 +170,7 @@ export default function PromptForm({
           <button type="button" className={`${actionButtonClasses} bg-[#ececf0] text-[#45424d]`} onClick={onCancel}>
             キャンセル
           </button>
-          <button type="submit" className={`${actionButtonClasses} bg-[#292633] text-white enabled:hover:bg-[#3a3547] disabled:cursor-not-allowed disabled:opacity-60`} disabled={submitting}>
+          <button type="button" className={`${actionButtonClasses} bg-[#292633] text-white enabled:hover:bg-[#3a3547] disabled:cursor-not-allowed disabled:opacity-60`} onClick={handleSubmit} disabled={submitting}>
             {submitting ? submittingLabel : submitLabel}
           </button>
         </div>

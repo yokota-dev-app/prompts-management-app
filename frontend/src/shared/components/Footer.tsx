@@ -12,7 +12,7 @@ const footerLinks = [
 export default function Footer() {
   return (
     <footer className={FOOTER}>
-      <small className="text-xs text-[#8d8a98]">© {new Date().getFullYear()} PromptShelf</small>
+      <small className="text-sm text-[#8d8a98]">© {new Date().getFullYear()} Prompts</small>
       <nav className={NAV} aria-label="フッターメニュー">
         {footerLinks.map((link) => (
           <a className="hover:text-(--top-purple)" href={link.href} key={link.href}>

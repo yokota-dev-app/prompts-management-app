@@ -1,5 +1,9 @@
+import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import step1Image from "../../assets/images/step1_create_prompt.png";
+import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
+import topHeroImage from "../../assets/images/top_hero.jpg";
 
 const buttonClasses =
   "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid border-transparent text-sm font-bold transition duration-200 hover:-translate-y-px";
@@ -10,47 +14,35 @@ const highlights = [
   {
     icon: "⌕",
     iconClasses: "bg-[#f0edff] text-[#6c58d7]",
-    title: "すぐ見つかる",
-    description: "検索とカテゴリーで、欲しいプロンプトにすばやくアクセス。",
+    title: "簡単な管理・検索",
+    description: "メモ帳やチャットに散らばったプロンプトを、一か所に集約。名前やキーワードからすぐ見つけられます。",
   },
   {
     icon: "↻",
     iconClasses: "bg-[#e6f7ef] text-[#3e9b79]",
-    title: "育てて、残せる",
-    description: "変更を重ねたプロンプトも、バージョンごとに管理。",
+    title: "すぐに使える",
+    description: "ワンクリックでコピーして、すぐにAIツールにジャンプ。操作最小限でプロンプトを使い回せます。",
   },
   {
     icon: "✳",
     iconClasses: "bg-[#fff1e3] text-[#d28b4b]",
-    title: "すぐ使い回せる",
-    description: "変数を入力して、用途に合うプロンプトをワンクリックでコピー。",
+    title: "柔軟な変数入力",
+    description: "変数の設定はフォームで簡単入力。毎回プロンプトを書き直す手間を減らします。",
   },
 ];
 
-const features = [
+const usageSteps = [
   {
-    number: "01",
-    icon: "⌕",
-    iconClasses: "bg-[#f0edff] text-[#6d59d9]",
-    title: "まとめて管理・検索",
-    description:
-      "メモ帳やチャットに散らばったプロンプトを、一か所に集約。名前やキーワードからすぐ見つけられます。",
+    step: "Step1.",
+    title: "プロンプトを作成",
+    image: step1Image,
+    alt: "プロンプト作成画面",
   },
   {
-    number: "02",
-    icon: "⟲",
-    iconClasses: "bg-[#e7f7ef] text-[#369a75]",
-    title: "変数をフォームで入力",
-    description:
-      "名前や目的などの変数をフォームに入力するだけ。毎回プロンプトを書き直す手間を減らします。",
-  },
-  {
-    number: "03",
-    icon: "▤",
-    iconClasses: "bg-[#fff1e4] text-[#d58b4b]",
-    title: "プロンプトを育てる",
-    description:
-      "更新したプロンプトを整理して保存。うまくいった形を、次の仕事でも再利用できます。",
+    step: "Step2.",
+    title: "プロンプトコピー＆AIツールにジャンプ",
+    image: step2Image,
+    alt: "プロンプトをコピーしてAIツールにジャンプする画面",
   },
 ];
 
@@ -66,41 +58,53 @@ function PrimaryButton({ children }: { children: ReactNode }) {
 }
 
 function TopView() {
+  const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
+  const imageDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = imageDialogRef.current;
+    if (activeImage && dialog && !dialog.open) {
+      dialog?.showModal();
+    } else if (dialog?.open) {
+      dialog.close();
+    }
+  }, [activeImage]);
+
   return (
     <div className="overflow-hidden bg-white">
       <main>
         <section
-          className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-9 px-5 pt-14 pb-16 md:grid-cols-2 md:gap-6 md:px-8 md:pt-18 md:pb-20 lg:gap-20 lg:px-20 lg:pt-24"
+          className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-9 px-5 pt-14 pb-16 md:grid-cols-2 md:gap-2 md:px-8 md:pt-18 md:pb-20 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-2 lg:px-12 lg:pt-24"
           aria-labelledby="top-hero-title"
         >
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-solid border-[#e9e4ff] bg-[#f8f6ff] px-3 py-2 text-xs font-bold text-[#6552c5]">
+            <div className="inline-flex items-center gap-2 rounded-full border border-solid border-[#e9e4ff] bg-[#f8f6ff] px-3 py-2 text-base font-bold text-[#6552c5]">
               <span className="h-2 w-2 rounded-full bg-[#8d7be9] [box-shadow:0_0_0_4px_#e9e4ff]" />
               プロンプトを、使い捨てにしない。
             </div>
             <h1
-              className="m-0 mt-6 mb-5 text-4xl leading-relaxed tracking-tight font-extrabold md:text-5xl lg:text-6xl"
+              className="m-0 mt-6 mb-5 text-2xl leading-relaxed tracking-tight font-extrabold md:text-3xl lg:text-4xl xl:text-5xl"
               id="top-hero-title"
             >
               いつもの仕事を、
               <br />
-              <span className="text-(--top-purple)">いつものプロンプト</span>で。
+              <span className="whitespace-nowrap"><span className="text-(--top-purple)">いつものプロンプト</span>で。</span>
             </h1>
-            <p className="m-0 text-sm leading-loose text-[#777686] md:text-base">
+            <p className="m-0 text-base leading-loose text-[#777686] md:text-base">
               お気に入りのプロンプトをひとつに整理。
               <br />
-              変数や出力例と一緒に保存して、必要なときにすぐ使えます。
+              変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
               <PrimaryButton>
-                無料で使い始める
+                無料で始める
                 <span aria-hidden="true">→</span>
               </PrimaryButton>
-              <a className="text-sm font-bold text-[#5e5a70]" href="#features">
-                機能を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
+              <a className="text-sm font-bold text-[#5e5a70]" href="#how-to-use">
+                使い方を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
               </a>
             </div>
-            <p className="mt-5 mb-0 flex items-center gap-2 text-xs text-[#8a8997]">
+            <p className="mt-5 mb-0 flex items-center gap-2 text-base text-[#8a8997]">
               <svg className="h-4 w-4 fill-none stroke-[#58a887] stroke-2 stroke-linecap-round stroke-linejoin-round" viewBox="0 0 20 20" aria-hidden="true">
                 <path d="m4 10 4 4 8-9" />
               </svg>
@@ -108,11 +112,13 @@ function TopView() {
             </p>
           </div>
 
-          <div className="flex aspect-video w-full max-w-xl items-center justify-center overflow-hidden rounded-lg border-2 border-dashed border-[#d1d5db] bg-[#f3f4f6]" aria-label="プロンプト管理画面のイメージ">
+          <div className="w-full" aria-label="プロンプト管理画面のイメージ">
             <img
-              src="/path/xxx.png" /* 画像のパス */
-              alt="プロンプト管理画面のプレースホルダー画像"
-              className="h-full w-full object-cover"
+              src={topHeroImage}
+              alt="Promptsのマイプロンプト画面"
+              width={1280}
+              height={760}
+              className="block h-auto w-full"
             />
           </div>
         </section>
@@ -130,39 +136,83 @@ function TopView() {
                 {highlight.icon}
               </span>
               <div>
-                <h2 className="mt-px mb-1.5 text-sm">{highlight.title}</h2>
-                <p className="m-0 text-xs leading-relaxed text-[#858292]">{highlight.description}</p>
+                <h2 className="mt-px mb-1.5 text-lg">{highlight.title}</h2>
+                <p className="m-0 text-sm leading-relaxed text-[#858292]">{highlight.description}</p>
               </div>
             </div>
           ))}
         </section>
 
-        <section className="bg-[#f9f8fc] px-5 pt-16 pb-16 md:px-8 md:pt-20 md:pb-24 lg:px-20" id="features" aria-labelledby="top-features-title">
-          <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
-            <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">YOUR PROMPT WORKSPACE</span>
-            <h2 className="mt-3 mb-3 text-2xl leading-normal tracking-tight md:text-3xl" id="top-features-title">プロンプト管理を、もっとシンプルに。</h2>
-            <p className="m-0 text-sm leading-loose text-[#838191]">散らばったメモを探す毎日から、知識を積み上げる毎日へ。</p>
-          </div>
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 md:grid-cols-3 md:gap-5">
-            {features.map((feature) => (
-              <article className="relative rounded-2xl border border-solid border-[#eeecf4] bg-white p-6 md:p-7" key={feature.number}>
-                <span className="absolute top-6 right-6 text-xs font-bold tracking-wider text-[#c5c1d4]">{feature.number}</span>
-                <div className={`grid h-12 w-12 place-items-center rounded-xl text-2xl ${feature.iconClasses}`}>
-                  {feature.icon}
-                </div>
-                <h3 className="mt-4 mb-2 text-base md:mt-6">{feature.title}</h3>
-                <p className="m-0 text-xs leading-loose text-[#828090]">{feature.description}</p>
-              </article>
-            ))}
+        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
+          <div className="mx-auto max-w-7xl">
+            <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
+              <span className="text-base font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
+              <h2 className="mt-3 mb-0 text-2xl leading-normal tracking-tight md:text-3xl" id="top-usage-title">使い方</h2>
+            </div>
+            <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8">
+              {usageSteps.map((step) => (
+                <article key={step.step}>
+                  <h3 className="mb-3 mt-0 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-xl md:text-lg">
+                    <span className="text-xl font-bold text-[#7564d7]">{step.step}</span>
+                    {step.title}
+                  </h3>
+                  <button
+                    type="button"
+                    className="block w-full cursor-zoom-in border-0 bg-transparent p-0"
+                    onClick={() => setActiveImage(step)}
+                    aria-label={`${step.alt}を拡大表示`}
+                  >
+                    <img className="block h-auto w-full rounded-lg border border-solid border-[#d8d3e8] bg-white [box-shadow:0_4px_16px_rgba(47,37,89,0.14)]" src={step.image} alt={step.alt} />
+                  </button>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
+        {activeImage && (
+          <dialog
+            ref={imageDialogRef}
+            className="fixed inset-0 m-0 grid h-dvh w-screen max-h-none max-w-none grid-rows-[3rem_minmax(0,1fr)] gap-2 border-0 bg-black/90 p-3 sm:p-5 backdrop:bg-black/90"
+            aria-label={activeImage.alt}
+            onClose={() => setActiveImage(null)}
+            onCancel={(event) => {
+              event.preventDefault();
+              setActiveImage(null);
+            }}
+            onClick={(event) => {
+              if (event.target === event.currentTarget) setActiveImage(null);
+            }}
+          >
+            <div className="flex items-center justify-end">
+              <button
+                type="button"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-solid border-white/60 bg-[#292633] text-3xl leading-none text-white cursor-pointer [box-shadow:0_2px_8px_rgb(0_0_0/40%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                onClick={() => setActiveImage(null)}
+                aria-label="画像を閉じる"
+                title="画像を閉じる"
+                autoFocus
+              >
+                ×
+              </button>
+            </div>
+            <div
+              className="flex min-h-0 items-center justify-center p-2 sm:p-4"
+              onClick={(event) => {
+                if (event.target === event.currentTarget) setActiveImage(null);
+              }}
+            >
+              <img className="max-h-full max-w-full object-contain" src={activeImage.image} alt={activeImage.alt} />
+            </div>
+          </dialog>
+        )}
+
         <section className="relative mx-4 my-12 overflow-hidden rounded-2xl bg-[linear-gradient(120deg,#f4f1ff,#faf8ff_55%,#f0f8f5)] px-5 py-12 text-center md:mx-auto md:my-20 md:max-w-6xl md:px-6 md:py-16">
           <div className="absolute -top-8 right-8 text-9xl text-[rgba(126,107,222,0.12)]" aria-hidden="true">✳</div>
-          <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
+          <span className="text-base font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
           <h2 className="mt-4 mb-3 text-3xl leading-relaxed tracking-tight md:text-4xl">探す時間を減らして、<br />いい仕事に集中しよう。</h2>
-          <p className="mt-0 mb-6 text-sm text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
-          <PrimaryButton>無料で使い始める <span aria-hidden="true">→</span></PrimaryButton>
+          <p className="mt-0 mb-6 text-base text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
+          <PrimaryButton>無料で始める <span aria-hidden="true">→</span></PrimaryButton>
         </section>
       </main>
     </div>

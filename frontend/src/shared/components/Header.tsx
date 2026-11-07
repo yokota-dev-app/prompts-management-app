@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../features/auth/useAuth';
 
 const HEADER =
-  'flex h-auto min-h-18 flex-wrap items-center justify-between gap-4 border-b border-[#f0eff5] bg-[rgb(255_255_255/0.94)] px-5 py-3.5 md:flex-nowrap md:gap-4 md:px-8 md:py-0 lg:h-22 lg:gap-7 lg:px-20';
+  'sticky top-0 z-20 flex h-auto min-h-18 flex-wrap items-center justify-between gap-4 border-b border-[#f0eff5] bg-[rgb(255_255_255/0.94)] px-5 py-3.5 shadow-[0_3px_8px_rgb(36_28_55/8%)] backdrop-blur-md md:flex-nowrap md:gap-4 md:px-8 md:py-0 lg:h-22 lg:gap-7 lg:px-20';
 const BRAND =
-  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-extrabold tracking-tight md:text-xl';
+  'inline-flex items-center gap-2.5 whitespace-nowrap text-lg font-extrabold tracking-tight md:text-3xl';
 const BRAND_MARK =
   'inline-flex h-8 w-8 md:h-9 md:w-9';
 const ACTIONS = 'ml-auto flex items-center gap-2 md:gap-2.5';
 const BUTTON =
   'inline-flex min-h-10 items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid px-3 text-xs font-bold transition duration-200 hover:-translate-y-px md:min-h-12 md:px-5 md:text-sm';
 const BUTTON_QUIET =
-  `${BUTTON} hidden border-[#e8e6ef] bg-white text-[#4c4a5b] hover:bg-[#f8f7fc] sm:inline-flex`;
+  `${BUTTON} hidden border-[#c9c5d6] bg-white text-[#4c4a5b] shadow-[0_1px_3px_rgb(36_28_55/10%)] hover:border-[#a9a3be] hover:bg-[#f8f7fc] sm:inline-flex`;
 const BUTTON_DARK =
   `${BUTTON} border-transparent bg-[#292633] text-white hover:bg-[#3a3547]`;
 
@@ -32,14 +32,16 @@ export default function Header() {
   return (
     <>
       <header className={HEADER}>
-        <Link className={BRAND} to="/" aria-label="PromptShelf ホーム">
+        <Link className={BRAND} to="/" aria-label="Prompts ホーム">
           <span className={BRAND_MARK} aria-hidden="true">
             <svg className="h-full w-full" viewBox="0 0 40 40" role="img">
               <rect className="fill-(--top-purple)" x="3" y="3" width="34" height="34" rx="11" />
-              <path className="fill-none stroke-white stroke-2 stroke-linecap-round" d="M13 13h14M13 20h14M13 27h8" />
+              <path className="fill-white" d="M11 8.5h10l5 5v18H11z" />
+              <path className="fill-none stroke-[#8a78e8] stroke-[1.4] stroke-linecap-round stroke-linejoin-round" d="M21 8.5v5h5M14.5 18h8M14.5 22h8M14.5 26h5" />
+              <path className="fill-[#ffe08a]" d="m30.5 7 .9 3.1 3.1.9-3.1.9-.9 3.1-.9-3.1-3.1-.9 3.1-.9z" />
             </svg>
           </span>
-          <span>PromptShelf</span>
+          <span>Prompts</span>
         </Link>
 
         <nav className={ACTIONS} aria-label="アカウントメニュー">
