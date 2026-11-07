@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getPrompt } from '../../features/prompts/api';
 import type { PromptDetail } from '../../features/prompts/api';
 import PromptActions from '../../features/prompts/components/PromptActions';
+import { getVariableDefault } from '../../features/prompts/variables';
 
 const VARIABLE_SPLIT_PATTERN = /\{\{\s*([^{}\s]+)\s*\}\}/;
 const detailSectionClasses = 'mx-auto grid w-full min-w-0 max-w-7xl gap-3 text-[#28252f] [&_h1]:m-0 [&_h1]:text-3xl [&_h2]:mt-2 [&_h2]:mb-0 [&_h2]:text-[#45424d] [&_h2]:text-base';
@@ -52,7 +53,7 @@ function PromptDetail({ id }: { id: string }) {
   if (!prompt || String(prompt.id) !== id) return <p role="status">読み込み中...</p>;
 
   const variableNames = extractVariables(prompt.content);
-  const valueOf = (name: string) => inputs[name] ?? prompt.variableSettings[name] ?? '';
+  const valueOf = (name: string) => inputs[name] ?? getVariableDefault(prompt.variableSettings[name]);
   const parts = prompt.content.split(VARIABLE_SPLIT_PATTERN);
   const appliedContent = parts
     .map((part, index) => (index % 2 === 1 ? valueOf(part) || `{{${part}}}` : part))
@@ -107,17 +108,38 @@ function PromptDetail({ id }: { id: string }) {
         <p className="m-0 text-[#85828c] text-sm">このプロンプトに変数はありません。</p>
       ) : (
         <div className="grid gap-2.5">
-          {variableNames.map((name) => (
-            <label key={name} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[10rem_minmax(0,1fr)] [&_code]:text-[#493b68] [&_code]:text-base">
-              <code>{name}</code>
-              <input
-                className={variableInputClasses}
-                value={valueOf(name)}
-                onChange={(event) => setInputs((current) => ({ ...current, [name]: event.target.value }))}
-                placeholder="値を入力"
-              />
-            </label>
-          ))}
+          {variableNames.map((name) => {
+            const setting = prompt.variableSettings[name];
+            if (typeof setting === 'object' && setting?.type === 'select') {
+              return (
+                <label key={name} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[10rem_minmax(0,1fr)] [&_code]:text-[#493b68] [&_code]:text-base">
+                  <code>{name}</code>
+                  <select
+                    className={variableInputClasses}
+                    value={valueOf(name)}
+                    onChange={(event) => setInputs((current) => ({ ...current, [name]: event.target.value }))}
+                  >
+                    <option value="">選択してください</option>
+                    {setting.options.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </label>
+              );
+            }
+
+            return (
+              <label key={name} className="grid grid-cols-1 items-center gap-3 md:grid-cols-[10rem_minmax(0,1fr)] [&_code]:text-[#493b68] [&_code]:text-base">
+                <code>{name}</code>
+                <input
+                  className={variableInputClasses}
+                  value={valueOf(name)}
+                  onChange={(event) => setInputs((current) => ({ ...current, [name]: event.target.value }))}
+                  placeholder="値を入力"
+                />
+              </label>
+            );
+          })}
         </div>
       )}
     </section>

@@ -1,5 +1,5 @@
 import { apiClient } from '../../shared/api/client';
-import type { Prompt } from './types';
+import type { Prompt, VariableSetting } from './types';
 
 interface PromptResponse {
   id: number;
@@ -8,7 +8,7 @@ interface PromptResponse {
   content: string;
   author: string;
   updated_at: string;
-  variable_settings: Record<string, string> | null;
+  variable_settings: Record<string, VariableSetting> | null;
 }
 
 function formatDate(value: string): string {
@@ -56,7 +56,7 @@ export interface CreatePromptInput {
   description: string;
   content: string;
   isPublic: boolean;
-  variableSettings: Record<string, string>;
+  variableSettings: Record<string, VariableSetting>;
 }
 
 function toRequestBody(input: CreatePromptInput) {
