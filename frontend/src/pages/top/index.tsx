@@ -12,47 +12,20 @@ const highlights = [
   {
     icon: "⌕",
     iconClasses: "bg-[#f0edff] text-[#6c58d7]",
-    title: "すぐ見つかる",
-    description: "検索とカテゴリーで、欲しいプロンプトにすばやくアクセス。",
+    title: "簡単な管理・検索",
+    description: "メモ帳やチャットに散らばったプロンプトを、一か所に集約。名前やキーワードからすぐ見つけられます。",
   },
   {
     icon: "↻",
     iconClasses: "bg-[#e6f7ef] text-[#3e9b79]",
-    title: "育てて、残せる",
-    description: "変更を重ねたプロンプトも、バージョンごとに管理。",
+    title: "すぐに使える",
+    description: "ワンクリックでコピーして、すぐにAIツールにジャンプ。操作最小限でプロンプトを使い回せます。",
   },
   {
     icon: "✳",
     iconClasses: "bg-[#fff1e3] text-[#d28b4b]",
-    title: "すぐ使い回せる",
-    description: "変数を入力して、用途に合うプロンプトをワンクリックでコピー。",
-  },
-];
-
-const features = [
-  {
-    number: "01",
-    icon: "⌕",
-    iconClasses: "bg-[#f0edff] text-[#6d59d9]",
-    title: "まとめて管理・検索",
-    description:
-      "メモ帳やチャットに散らばったプロンプトを、一か所に集約。名前やキーワードからすぐ見つけられます。",
-  },
-  {
-    number: "02",
-    icon: "⟲",
-    iconClasses: "bg-[#e7f7ef] text-[#369a75]",
-    title: "変数をフォームで入力",
-    description:
-      "名前や目的などの変数をフォームに入力するだけ。毎回プロンプトを書き直す手間を減らします。",
-  },
-  {
-    number: "03",
-    icon: "▤",
-    iconClasses: "bg-[#fff1e4] text-[#d58b4b]",
-    title: "プロンプトを育てる",
-    description:
-      "更新したプロンプトを整理して保存。うまくいった形を、次の仕事でも再利用できます。",
+    title: "柔軟な変数入力",
+    description: "変数の設定はフォームで簡単入力。毎回プロンプトを書き直す手間を減らします。",
   },
 ];
 
@@ -113,8 +86,8 @@ function TopView() {
                 無料で使い始める
                 <span aria-hidden="true">→</span>
               </PrimaryButton>
-              <a className="text-sm font-bold text-[#5e5a70]" href="#features">
-                機能を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
+              <a className="text-sm font-bold text-[#5e5a70]" href="#how-to-use">
+                使い方を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
               </a>
             </div>
             <p className="mt-5 mb-0 flex items-center gap-2 text-xs text-[#8a8997]">
@@ -149,14 +122,14 @@ function TopView() {
                 {highlight.icon}
               </span>
               <div>
-                <h2 className="mt-px mb-1.5 text-sm">{highlight.title}</h2>
-                <p className="m-0 text-xs leading-relaxed text-[#858292]">{highlight.description}</p>
+                <h2 className="mt-px mb-1.5 text-lg">{highlight.title}</h2>
+                <p className="m-0 text-sm leading-relaxed text-[#858292]">{highlight.description}</p>
               </div>
             </div>
           ))}
         </section>
 
-        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title">
+        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
               <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
@@ -166,33 +139,13 @@ function TopView() {
               {usageSteps.map((step) => (
                 <article key={step.step}>
                   <h3 className="mb-3 mt-0 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-base md:text-lg">
-                    <span className="text-sm font-bold text-[#7564d7]">{step.step}</span>
+                    <span className="text-lg font-bold text-[#7564d7]">{step.step}</span>
                     {step.title}
                   </h3>
                   <img className="block h-auto w-full rounded-lg border border-solid border-[#e9e7ef]" src={step.image} alt={step.alt} />
                 </article>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="bg-[#f9f8fc] px-5 pt-16 pb-16 md:px-8 md:pt-20 md:pb-24 lg:px-20" id="features" aria-labelledby="top-features-title">
-          <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
-            <span className="text-xs font-extrabold tracking-widest text-[#7564d7]">YOUR PROMPT WORKSPACE</span>
-            <h2 className="mt-3 mb-3 text-2xl leading-normal tracking-tight md:text-3xl" id="top-features-title">プロンプト管理を、もっとシンプルに。</h2>
-            <p className="m-0 text-sm leading-loose text-[#838191]">散らばったメモを探す毎日から、知識を積み上げる毎日へ。</p>
-          </div>
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 md:grid-cols-3 md:gap-5">
-            {features.map((feature) => (
-              <article className="relative rounded-2xl border border-solid border-[#eeecf4] bg-white p-6 md:p-7" key={feature.number}>
-                <span className="absolute top-6 right-6 text-xs font-bold tracking-wider text-[#c5c1d4]">{feature.number}</span>
-                <div className={`grid h-12 w-12 place-items-center rounded-xl text-2xl ${feature.iconClasses}`}>
-                  {feature.icon}
-                </div>
-                <h3 className="mt-4 mb-2 text-base md:mt-6">{feature.title}</h3>
-                <p className="m-0 text-xs leading-loose text-[#828090]">{feature.description}</p>
-              </article>
-            ))}
           </div>
         </section>
 
