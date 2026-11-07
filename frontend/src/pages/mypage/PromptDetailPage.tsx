@@ -73,9 +73,22 @@ function PromptDetail({ id }: { id: string }) {
         />
       </div>
       {copyFailed && <p className="m-0 text-[#b42318] text-base" role="alert">コピーできませんでした。</p>}
-      <p className="m-0 text-[#85828c] text-sm">
-        {prompt.isPublic ? '公開' : '非公開'} ・ {prompt.author} ・ 更新日 {prompt.updatedAt}
-      </p>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#85828c]">
+        <p className="m-0 flex items-center gap-2">
+          <span>公開設定</span>
+          <span
+            className={`rounded-full px-2.5 py-1 font-bold ${
+              prompt.isPublic
+                ? 'bg-[#eee9fb] text-[#493b68]'
+                : 'bg-[#ececf0] text-[#45424d]'
+            }`}
+          >
+            {prompt.isPublic ? '公開' : '非公開'}
+          </span>
+        </p>
+        <span>{prompt.author}</span>
+        <span>更新日 {prompt.updatedAt}</span>
+      </div>
       {prompt.summary && <p className="m-0 text-base leading-relaxed [overflow-wrap:anywhere]">{prompt.summary}</p>}
 
       <div className="flex min-w-0 items-center justify-between gap-3">
