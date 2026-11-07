@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
 import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
+import topHeroImage from "../../assets/images/top_hero.jpg";
 
 const buttonClasses =
   "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid border-transparent text-sm font-bold transition duration-200 hover:-translate-y-px";
@@ -113,7 +114,7 @@ function TopView() {
 
           <div className="w-full" aria-label="プロンプト管理画面のイメージ">
             <img
-              src="/src/assets/images/top_hero.jpg"
+              src={topHeroImage}
               alt="Promptsのマイプロンプト画面"
               width={1280}
               height={760}
