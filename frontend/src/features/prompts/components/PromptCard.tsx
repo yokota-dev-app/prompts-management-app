@@ -26,7 +26,7 @@ export default function PromptCard({ prompt, onDeleted }: PromptCardProps) {
         if (event.target === event.currentTarget && event.key === 'Enter') navigate(detailPath);
       }}
     >
-      <div className="flex items-start justify-between gap-3 [&_h2]:m-0 [&_h2]:overflow-hidden [&_h2]:text-[#26232d] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:leading-snug [&_h2]:text-ellipsis">
+      <div className="flex items-start justify-between gap-3 [&_h2]:m-0 [&_h2]:overflow-hidden [&_h2]:text-[#26232d] [&_h2]:text-lg [&_h2]:font-bold [&_h2]:leading-snug [&_h2]:text-ellipsis [&_h2]:[display:-webkit-box] [&_h2]:[-webkit-box-orient:vertical] [&_h2]:[-webkit-line-clamp:2] [&_h2]:[line-clamp:2]">
         <div className="group relative min-w-0">
           <h2>{prompt.title}</h2>
           {prompt.summary && (

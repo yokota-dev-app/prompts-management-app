@@ -139,7 +139,7 @@ export default function DashboardLayout() {
           </p>
         )}
         <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-gutter:stable]">
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 pb-10 pt-7 sm:px-6 md:px-8 md:pb-14 md:pt-10 lg:px-14">
+          <main className="mx-auto w-full max-w-screen-2xl flex-1 px-3 pb-10 pt-7 sm:px-4 md:px-6 md:pb-14 md:pt-10 lg:px-8">
             <Outlet context={searchQuery} />
           </main>
         </div>

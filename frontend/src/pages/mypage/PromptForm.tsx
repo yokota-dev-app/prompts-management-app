@@ -87,7 +87,7 @@ export default function PromptForm({
   };
 
   return (
-    <form className="mx-auto grid w-full max-w-6xl gap-4" onSubmit={handleSubmit}>
+    <form className="mx-auto grid w-full max-w-7xl gap-4" onSubmit={handleSubmit}>
       <h1 className="m-0 text-[#28252f] text-3xl">{heading}</h1>
       {errors.length > 0 && (
         <ul className="m-0 rounded-lg border border-solid border-[#f3c7c2] bg-[#fff3f1] py-2.5 pr-3.5 pl-8 text-[#b42318] text-sm" role="alert">
