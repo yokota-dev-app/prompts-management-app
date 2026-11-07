@@ -75,6 +75,20 @@ RSpec.describe "Api::V1 prompts", type: :request do
         expect(prompt.prompt_versions.first).to have_attributes(version_number: 1, content: "Hi {{name}}", variable_settings: { "name" => "Taro" })
       end
 
+      it "creates and returns dropdown variable settings" do
+        dropdown_setting = { type: "select", options: [ "丁寧", "カジュアル" ], defaultValue: "丁寧" }
+        post "/api/v1/prompts",
+          params: { prompt: { title: "Dropdown", content: "Write {{tone}}", variable_settings: { tone: dropdown_setting } } },
+          as: :json
+
+        expect(response).to have_http_status(:created)
+        prompt = Prompt.find(response.parsed_body["id"])
+        expect(prompt.latest_version.variable_settings).to eq("tone" => dropdown_setting.stringify_keys)
+
+        get "/api/v1/prompts/#{prompt.id}"
+        expect(response.parsed_body["variable_settings"]).to eq("tone" => dropdown_setting.stringify_keys)
+      end
+
       it "returns errors without a title" do
         params[:prompt][:title] = ""
 

@@ -1,3 +1,11 @@
+export interface SelectVariableSetting {
+  type: 'select';
+  options: string[];
+  defaultValue: string;
+}
+
+export type VariableSetting = string | SelectVariableSetting;
+
 export interface Prompt {
   id: number;
   title: string;
@@ -5,5 +13,5 @@ export interface Prompt {
   content: string;
   author: string;
   updatedAt: string;
-  variableSettings: Record<string, string>;
+  variableSettings: Record<string, VariableSetting>;
 }

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { isAxiosError } from 'axios';
 import type { CreatePromptInput } from '../../features/prompts/api';
+import type { SelectVariableSetting, VariableSetting } from '../../features/prompts/types';
+import { getVariableDefault } from '../../features/prompts/variables';
 
 interface PromptFormProps {
   heading: string;
@@ -14,7 +16,7 @@ interface PromptFormProps {
 
 const VARIABLE_PATTERN = /\{\{\s*([^{}\s]+)\s*\}\}/g;
 const fieldClasses = 'grid gap-1.5 text-[#45424d] text-sm font-bold [&_input]:h-10 [&_input]:rounded-lg [&_input]:border [&_input]:border-solid [&_input]:border-[#b9b4c7] [&_input]:bg-white [&_input]:px-3 [&_input]:py-0 [&_input]:text-[#28252f] [&_input]:text-sm [&_input]:font-normal [&_input]:[box-shadow:0_1px_2px_rgb(36_28_55/8%)] [&_textarea]:rounded-lg [&_textarea]:border [&_textarea]:border-solid [&_textarea]:border-[#b9b4c7] [&_textarea]:bg-white [&_textarea]:text-[#28252f] [&_textarea]:[box-shadow:0_1px_2px_rgb(36_28_55/8%)] [&_textarea]:[font-family:inherit] [&_textarea]:text-sm [&_textarea]:font-normal [&_textarea]:leading-relaxed [&_select]:h-10 [&_select]:rounded-lg [&_select]:border [&_select]:border-solid [&_select]:border-[#b9b4c7] [&_select]:bg-white [&_select]:px-3 [&_select]:py-0 [&_select]:text-[#28252f] [&_select]:[box-shadow:0_1px_2px_rgb(36_28_55/8%)] [&_select]:[font-family:inherit] [&_select]:text-sm [&_select]:font-normal [&_input:focus]:border-[#5b46a0] [&_input:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_input:focus]:[outline:none] [&_textarea:focus]:border-[#5b46a0] [&_textarea:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_textarea:focus]:[outline:none] [&_select:focus]:border-[#5b46a0] [&_select:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_select:focus]:[outline:none]';
-const variableFieldClasses = 'grid gap-1 [&_code]:text-[#493b68] [&_code]:text-sm [&_input]:h-9 [&_input]:rounded-md [&_input]:border [&_input]:border-solid [&_input]:border-[#b9b4c7] [&_input]:bg-white [&_input]:px-2.5 [&_input]:py-0 [&_input]:text-sm [&_input]:font-normal [&_input:focus]:border-[#5b46a0] [&_input:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_input:focus]:[outline:none]';
+const variableFieldClasses = 'grid gap-1 [&_code]:text-[#493b68] [&_code]:text-sm [&_input]:h-9 [&_input]:rounded-md [&_input]:border [&_input]:border-solid [&_input]:border-[#b9b4c7] [&_input]:bg-white [&_input]:px-2.5 [&_input]:py-0 [&_input]:text-sm [&_input]:font-normal [&_input:focus]:border-[#5b46a0] [&_input:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_input:focus]:[outline:none] [&_textarea]:min-h-20 [&_textarea]:rounded-md [&_textarea]:border [&_textarea]:border-solid [&_textarea]:border-[#b9b4c7] [&_textarea]:bg-white [&_textarea]:p-2.5 [&_textarea]:text-sm [&_textarea]:font-normal [&_textarea:focus]:border-[#5b46a0] [&_textarea:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_textarea:focus]:[outline:none] [&_select]:h-9 [&_select]:rounded-md [&_select]:border [&_select]:border-solid [&_select]:border-[#b9b4c7] [&_select]:bg-white [&_select]:px-2.5 [&_select]:py-0 [&_select]:text-sm [&_select]:font-normal [&_select:focus]:border-[#5b46a0] [&_select:focus]:[box-shadow:0_0_0_3px_rgb(91_70_160/18%)] [&_select:focus]:[outline:none]';
 function RequiredBadge() {
   return (
     <span className="ml-2 rounded-sm bg-[#fdecea] px-1.5 py-0.5 align-middle text-xs font-bold text-[#b42318]">
@@ -36,6 +38,14 @@ function renderPreview(content: string, values: Record<string, string>): string 
   });
 }
 
+function isSelectSetting(setting: VariableSetting | undefined): setting is SelectVariableSetting {
+  return typeof setting === 'object' && setting !== null && setting.type === 'select';
+}
+
+function normalizeOptions(value: string): string[] {
+  return [...new Set(value.split('\n').map((option) => option.trim()).filter(Boolean))];
+}
+
 export default function PromptForm({
   heading,
   submitLabel,
@@ -49,32 +59,63 @@ export default function PromptForm({
   const [description, setDescription] = useState(initial?.description ?? '');
   const [content, setContent] = useState(initial?.content ?? '');
   const [isPublic, setIsPublic] = useState(initial?.isPublic ?? false);
-  const [variableValues, setVariableValues] = useState<Record<string, string>>(
+  const [variableSettings, setVariableSettings] = useState<Record<string, VariableSetting>>(
     initial?.variableSettings ?? {},
   );
   const [errors, setErrors] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
   const variables = useMemo(() => extractVariables(content), [content]);
-  const preview = useMemo(() => renderPreview(content, variableValues), [content, variableValues]);
+  const previewValues = useMemo(
+    () => Object.fromEntries(
+      Object.entries(variableSettings).map(([name, setting]) => [name, getVariableDefault(setting)]),
+    ),
+    [variableSettings],
+  );
+  const preview = useMemo(() => renderPreview(content, previewValues), [content, previewValues]);
 
   const handleSubmit = async () => {
     const validationErrors: string[] = [];
     if (!title.trim()) validationErrors.push('タイトルを入力してください。');
     if (!content.trim()) validationErrors.push('プロンプト内容を入力してください。');
+    for (const name of variables) {
+      const setting = variableSettings[name];
+      if (isSelectSetting(setting)) {
+        const options = normalizeOptions(setting.options.join('\n'));
+        if (options.length === 0) validationErrors.push(`「${name}」の候補を1つ以上入力してください。`);
+      }
+    }
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    const variableSettings = Object.fromEntries(
-      variables.map((name) => [name, variableValues[name] ?? '']),
+    const submittedVariableSettings = Object.fromEntries(
+      variables.map((name) => {
+        const setting = variableSettings[name] ?? '';
+        return [
+          name,
+          isSelectSetting(setting)
+            ? {
+                ...setting,
+                options: normalizeOptions(setting.options.join('\n')),
+                defaultValue: normalizeOptions(setting.options.join('\n'))[0] ?? '',
+              }
+            : setting,
+        ];
+      }),
     );
 
     setSubmitting(true);
     setErrors([]);
     try {
-      await onSubmit({ title: title.trim(), description, content, isPublic, variableSettings });
+      await onSubmit({
+        title: title.trim(),
+        description,
+        content,
+        isPublic,
+        variableSettings: submittedVariableSettings,
+      });
     } catch (error) {
       const apiErrors = isAxiosError<{ errors?: string[] }>(error) ? error.response?.data?.errors : undefined;
       setErrors(apiErrors?.length ? apiErrors : [errorFallback]);
@@ -111,8 +152,8 @@ export default function PromptForm({
         />
       </label>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_15rem]">
-        <div className="grid gap-4">
+      <div className="grid grid-cols-1 gap-4 md:relative md:grid-cols-[minmax(0,1fr)_15rem]">
+        <div className="grid content-start gap-4">
           <label className={fieldClasses}>
             <span>
               プロンプト内容
@@ -132,23 +173,73 @@ export default function PromptForm({
           </div>
         </div>
 
-        <aside className="grid grid-rows-[auto_1fr] gap-1.5 text-[#45424d] text-sm font-bold">
+        <aside className="grid min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-1.5 text-[#45424d] text-sm font-bold md:absolute md:inset-y-0 md:right-0 md:w-60">
           <span>変数</span>
-          <div className="grid content-start gap-3 rounded-lg border border-solid border-[#b9b4c7] bg-[#f3f1f8] p-3 text-[#28252f] [box-shadow:0_1px_2px_rgb(36_28_55/8%)] [font-family:inherit] text-base font-normal">
+          <div className="grid min-h-0 content-start gap-3 overflow-y-auto rounded-lg border border-solid border-[#b9b4c7] bg-[#f3f1f8] p-3 text-[#28252f] [box-shadow:0_1px_2px_rgb(36_28_55/8%)] [font-family:inherit] text-base font-normal">
             {variables.length === 0 ? (
               <p className="m-0 text-[#a09da6] text-sm leading-relaxed">{'{{変数名}}'} を入力すると、ここに表示されます。</p>
             ) : (
               variables.map((name) => (
-                <label key={name} className={variableFieldClasses}>
+                <div key={name} className={variableFieldClasses}>
                   <code>{name}</code>
-                  <input
-                    value={variableValues[name] ?? ''}
-                    onChange={(event) =>
-                      setVariableValues((current) => ({ ...current, [name]: event.target.value }))
-                    }
-                    placeholder="初期値"
-                  />
-                </label>
+                  <select
+                    aria-label={`${name}の入力形式`}
+                    value={isSelectSetting(variableSettings[name]) ? 'select' : 'text'}
+                    onChange={(event) => {
+                      const current = variableSettings[name] ?? '';
+                      if (event.target.value === 'select') {
+                        const defaultValue = getVariableDefault(current);
+                        setVariableSettings((settings) => ({
+                          ...settings,
+                          [name]: {
+                            type: 'select',
+                            options: defaultValue ? [defaultValue] : [],
+                            defaultValue,
+                          },
+                        }));
+                      } else {
+                        setVariableSettings((settings) => ({
+                          ...settings,
+                          [name]: getVariableDefault(current),
+                        }));
+                      }
+                    }}
+                  >
+                    <option value="text">自由入力</option>
+                    <option value="select">プルダウン</option>
+                  </select>
+                  {isSelectSetting(variableSettings[name]) ? (
+                    <>
+                      <textarea
+                        aria-label={`${name}の候補`}
+                        value={variableSettings[name].options.join('\n')}
+                        onChange={(event) => {
+                          const current = variableSettings[name];
+                          if (isSelectSetting(current)) {
+                            const options = normalizeOptions(event.target.value);
+                            setVariableSettings((settings) => ({
+                              ...settings,
+                              [name]: {
+                                ...current,
+                                options: event.target.value.split('\n'),
+                                defaultValue: options[0] ?? '',
+                              },
+                            }));
+                          }
+                        }}
+                        placeholder={'候補を1行に1つずつ入力\n例: 丁寧\nカジュアル'}
+                      />
+                    </>
+                  ) : (
+                    <input
+                      value={typeof variableSettings[name] === 'string' ? variableSettings[name] : ''}
+                      onChange={(event) =>
+                        setVariableSettings((current) => ({ ...current, [name]: event.target.value }))
+                      }
+                      placeholder="初期値"
+                    />
+                  )}
+                </div>
               ))
             )}
           </div>
