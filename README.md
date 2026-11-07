@@ -143,9 +143,10 @@
 - プロンプトのCRUD（作成・閲覧・編集・削除）
 - 変数フォーム機能
 - ワンクリックコピー機能
+- プロンプト検索機能（マイプロンプト内）
 
 ### 本リリースで作る機能
-- プロンプト検索機能
+- プロンプト検索機能（他ユーザーの公開プロンプト）
 - ピン留め機能
 - ユーザー削除・情報編集機能
 - プロンプトのバージョン履歴管理＆復元
@@ -252,4 +253,4 @@
 - Figmaで管理：[リンク](https://www.figma.com/design/tRwybLsPb1jv8dSkvLrkaD/%E3%83%97%E3%83%AD%E3%83%B3%E3%83%97%E3%83%88%E4%BD%9C%E6%88%90%E3%83%BB%E7%AE%A1%E7%90%86%E3%83%84%E3%83%BC%E3%83%AB?m=auto&t=D8APVCxXXiaAcTqY-1)
 
 #### ER図
-[![Image from Gyazo](https://i.gyazo.com/082583da54241d29d645c7fc09770480.png)](https://gyazo.com/082583da54241d29d645c7fc09770480)
+[![Image from Gyazo](https://i.gyazo.com/cbd6a55a8245ea1664283920c481933d.png)](https://gyazo.com/cbd6a55a8245ea1664283920c481933d)
