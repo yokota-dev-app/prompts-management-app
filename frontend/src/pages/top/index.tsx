@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
 import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
-import topHeroImage from "../../assets/images/top_hero.jpg";
+import arriveImage from "../../assets/images/characters/arrive.jpg";
+import topHeroImage from "../../assets/images/characters/use_image.jpg";
 
 const buttonClasses =
   "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid border-transparent text-sm font-bold transition duration-200 hover:-translate-y-px";
@@ -46,20 +47,71 @@ const usageSteps = [
   },
 ];
 
-function PrimaryButton({ children }: { children: ReactNode }) {
+function PrimaryButton({
+  children,
+  withArrivalCharacter = false,
+}: {
+  children: ReactNode;
+  withArrivalCharacter?: boolean;
+}) {
+  const [showArrivalCharacter, setShowArrivalCharacter] = useState(false);
+
   return (
-    <Link
-      className={`${buttonClasses} ${primaryButtonClasses} min-h-13 px-5 sm:px-6`}
-      to="/signup"
-    >
-      {children}
-    </Link>
+    <span className="relative isolate inline-flex">
+      {withArrivalCharacter && (
+        // ひょっこり担当（位置・拡大・傾き・不透明度）
+        <span
+          className="pointer-events-none absolute z-0 h-12 w-12 transition-[right,bottom,transform,opacity] duration-400 ease-[cubic-bezier(0.2,1,0.66,1)] motion-reduce:transition-none"
+          aria-hidden="true"
+          style={{
+            right: showArrivalCharacter ? "-2.1875rem" : "-1.25rem",
+            bottom: showArrivalCharacter ? "0" : "0.625rem",
+            opacity: showArrivalCharacter ? 1 : 0,
+            transform: showArrivalCharacter
+              ? "scale(-1, 1) rotate(0deg)"
+              : "scale(-0.8, 0.8) rotate(25deg)",
+          }}
+        >
+          {/* 出現後のふわふわ担当（回転しないラッパー） */}
+          <span className="block h-full w-full">
+            {/* 画像の向き担当 */}
+            <img
+              className="block h-full w-full object-contain"
+              src={arriveImage}
+              alt=""
+            />
+          </span>
+        </span>
+      )}
+      <Link
+        className={`${buttonClasses} ${primaryButtonClasses} relative z-10 min-h-13 px-5 sm:px-6`}
+        to="/signup"
+        onMouseEnter={() => setShowArrivalCharacter(true)}
+        onMouseLeave={() => setShowArrivalCharacter(false)}
+        onFocus={() => setShowArrivalCharacter(true)}
+        onBlur={() => setShowArrivalCharacter(false)}
+        onTouchStart={() => setShowArrivalCharacter(true)}
+      >
+        {children}
+      </Link>
+    </span>
   );
 }
-
 function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
+  const { hash } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (hash !== "#how-to-use") return;
+
+    const scrollFrame = window.requestAnimationFrame(() => {
+      document.getElementById("how-to-use")?.scrollIntoView({ behavior: "smooth" });
+      navigate("/", { replace: true });
+    });
+    return () => window.cancelAnimationFrame(scrollFrame);
+  }, [hash, navigate]);
 
   useEffect(() => {
     const dialog = imageDialogRef.current;
@@ -96,13 +148,9 @@ function TopView() {
               変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
-              <PrimaryButton>
+              <PrimaryButton withArrivalCharacter>
                 無料で始める
-                <span aria-hidden="true">→</span>
               </PrimaryButton>
-              <a className="text-sm font-bold text-[#5e5a70]" href="#how-to-use">
-                使い方を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
-              </a>
             </div>
             <p className="mt-5 mb-0 flex items-center gap-2 text-base text-[#8a8997]">
               <svg className="h-4 w-4 fill-none stroke-[#58a887] stroke-2 stroke-linecap-round stroke-linejoin-round" viewBox="0 0 20 20" aria-hidden="true">
@@ -143,7 +191,7 @@ function TopView() {
           ))}
         </section>
 
-        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
+        <section className="scroll-mt-24 bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
               <span className="text-base font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
@@ -212,7 +260,7 @@ function TopView() {
           <span className="text-base font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
           <h2 className="mt-4 mb-3 text-3xl leading-relaxed tracking-tight md:text-4xl">探す時間を減らして、<br />いい仕事に集中しよう。</h2>
           <p className="mt-0 mb-6 text-base text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
-          <PrimaryButton>無料で始める <span aria-hidden="true">→</span></PrimaryButton>
+          <PrimaryButton>無料で始める</PrimaryButton>
         </section>
       </main>
     </div>
