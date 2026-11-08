@@ -83,13 +83,8 @@ export default function DashboardLayout() {
               to="/"
               aria-label="Prompts ホーム"
             >
-              <span className="inline-flex h-9 w-9 shrink-0 [&_svg]:h-full [&_svg]:w-full" aria-hidden="true">
-                <svg viewBox="0 0 40 40">
-                  <rect x="3" y="3" width="34" height="34" rx="11" fill="#6854d9" />
-                  <path d="M11 8.5h10l5 5v18H11z" fill="#fff" />
-                  <path d="M21 8.5v5h5M14.5 18h8M14.5 22h8M14.5 26h5" fill="none" stroke="#8a78e8" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="m30.5 7 .9 3.1 3.1.9-3.1.9-.9 3.1-.9-3.1-3.1-.9 3.1-.9z" fill="#ffe08a" />
-                </svg>
+              <span className="inline-flex h-9 w-9 shrink-0">
+                <img className="h-full w-full" src="/favicon.svg" alt="" />
               </span>
               <span>Prompts</span>
             </Link>
