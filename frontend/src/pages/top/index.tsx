@@ -49,14 +49,16 @@ const usageSteps = [
 
 function PrimaryButton({
   children,
-  showArrivalCharacter,
+  withArrivalCharacter = false,
 }: {
   children: ReactNode;
-  showArrivalCharacter?: boolean;
+  withArrivalCharacter?: boolean;
 }) {
+  const [showArrivalCharacter, setShowArrivalCharacter] = useState(false);
+
   return (
     <span className="relative isolate inline-flex">
-      {showArrivalCharacter !== undefined && (
+      {withArrivalCharacter && (
         // ボタン右端・縦中央を基準点にし、基準点より左側だけをクリップする
         <span
           className="pointer-events-none absolute top-1/2 left-full z-0 h-0 w-0 [clip-path:inset(-100vh_-100vw_-100vh_0)]"
@@ -81,6 +83,10 @@ function PrimaryButton({
       <Link
         className={`${buttonClasses} ${primaryButtonClasses} relative z-10 min-h-13 px-5 sm:px-6`}
         to="/signup"
+        onMouseEnter={() => setShowArrivalCharacter(true)}
+        onMouseLeave={() => setShowArrivalCharacter(false)}
+        onFocus={() => setShowArrivalCharacter(true)}
+        onBlur={() => setShowArrivalCharacter(false)}
       >
         {children}
       </Link>
@@ -90,7 +96,6 @@ function PrimaryButton({
 
 function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
-  const [showArrivalCharacter, setShowArrivalCharacter] = useState(false);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
   const { hash } = useLocation();
 
@@ -102,25 +107,6 @@ function TopView() {
     });
     return () => window.cancelAnimationFrame(scrollFrame);
   }, [hash]);
-
-  useEffect(() => {
-    let appearanceTimeout: number;
-    let hideTimeout: number;
-
-    const showCharacter = () => {
-      setShowArrivalCharacter(true);
-      hideTimeout = window.setTimeout(() => {
-        setShowArrivalCharacter(false);
-        appearanceTimeout = window.setTimeout(showCharacter, 10000);
-      }, 5000);
-    };
-
-    appearanceTimeout = window.setTimeout(showCharacter, 10000);
-    return () => {
-      window.clearTimeout(appearanceTimeout);
-      window.clearTimeout(hideTimeout);
-    };
-  }, []);
 
   useEffect(() => {
     const dialog = imageDialogRef.current;
@@ -157,7 +143,7 @@ function TopView() {
               変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
-              <PrimaryButton showArrivalCharacter={showArrivalCharacter}>
+              <PrimaryButton withArrivalCharacter>
                 無料で始める
 
               </PrimaryButton>
