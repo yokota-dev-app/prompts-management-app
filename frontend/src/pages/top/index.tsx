@@ -59,21 +59,24 @@ function PrimaryButton({
   return (
     <span className="relative isolate inline-flex">
       {withArrivalCharacter && (
-        // ボタン右端・縦中央を基準点にし、基準点より左側だけをクリップする
+        // ひょっこり担当（位置・拡大・傾き・不透明度）
         <span
-          className="pointer-events-none absolute top-1/2 left-full z-0 h-0 w-0 [clip-path:inset(-100vh_-100vw_-100vh_0)]"
+          className="pointer-events-none absolute z-0 h-12 w-12 transition-[right,bottom,transform,opacity] duration-400 ease-[cubic-bezier(0.2,1,0.66,1)] motion-reduce:transition-none"
           aria-hidden="true"
+          style={{
+            right: showArrivalCharacter ? "-2.1875rem" : "-1.25rem",
+            bottom: showArrivalCharacter ? "0" : "0.625rem",
+            opacity: showArrivalCharacter ? 1 : 0,
+            transform: showArrivalCharacter
+              ? "scale(-1, 1) rotate(0deg)"
+              : "scale(-0.8, 0.8) rotate(25deg)",
+          }}
         >
-          {/* スライド担当（横移動のみ）。h-16 の半分の -mt-8 で縦中央に揃える */}
-          <span
-            className="absolute top-0 left-0 -mt-8 block h-16 w-16 transition-transform duration-500 ease-out motion-reduce:transition-none"
-            style={{
-              transform: `translateX(${showArrivalCharacter ? "-1.1rem" : "-100%"})`,
-            }}
-          >
-            {/* 回転担当 */}
+          {/* 出現後のふわふわ担当（回転しないラッパー） */}
+          <span className="block h-full w-full">
+            {/* 画像の向き担当 */}
             <img
-              className="block h-full w-full rotate-90 object-contain"
+              className="block h-full w-full object-contain"
               src={arriveImage}
               alt=""
             />
@@ -87,13 +90,13 @@ function PrimaryButton({
         onMouseLeave={() => setShowArrivalCharacter(false)}
         onFocus={() => setShowArrivalCharacter(true)}
         onBlur={() => setShowArrivalCharacter(false)}
+        onTouchStart={() => setShowArrivalCharacter(true)}
       >
         {children}
       </Link>
     </span>
   );
 }
-
 function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
@@ -147,7 +150,6 @@ function TopView() {
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
               <PrimaryButton withArrivalCharacter>
                 無料で始める
-
               </PrimaryButton>
             </div>
             <p className="mt-5 mb-0 flex items-center gap-2 text-base text-[#8a8997]">
