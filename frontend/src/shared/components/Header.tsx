@@ -44,7 +44,18 @@ export default function Header() {
           <span>Prompts</span>
         </Link>
 
-        <nav className={ACTIONS} aria-label="アカウントメニュー">
+        <nav className={ACTIONS} aria-label="メインメニュー">
+          <Link
+            className="mr-3 whitespace-nowrap text-sm font-bold text-[#5e5a70] transition-colors hover:text-(--top-purple) sm:mr-5"
+            to="/#how-to-use"
+            onClick={() => {
+              if (window.location.pathname === '/') {
+                document.getElementById('how-to-use')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            使い方
+          </Link>
           {!loading && (isLoggedIn ? (
             <>
               <span className="whitespace-nowrap text-sm font-bold text-[#4c4a5b]">{user?.name} さん</span>

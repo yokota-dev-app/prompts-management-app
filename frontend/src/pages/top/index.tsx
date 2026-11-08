@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
 import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
 import arriveImage from "../../assets/images/characters/arrive.jpg";
@@ -92,6 +92,16 @@ function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
   const [showArrivalCharacter, setShowArrivalCharacter] = useState(false);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash !== "#how-to-use") return;
+
+    const scrollFrame = window.requestAnimationFrame(() => {
+      document.getElementById("how-to-use")?.scrollIntoView({ behavior: "smooth" });
+    });
+    return () => window.cancelAnimationFrame(scrollFrame);
+  }, [hash]);
 
   useEffect(() => {
     let appearanceTimeout: number;
@@ -149,11 +159,8 @@ function TopView() {
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
               <PrimaryButton showArrivalCharacter={showArrivalCharacter}>
                 無料で始める
-                <span aria-hidden="true">→</span>
+
               </PrimaryButton>
-              <a className="text-sm font-bold text-[#5e5a70]" href="#how-to-use">
-                使い方を見る <span className="pl-1 text-(--top-purple)" aria-hidden="true">↓</span>
-              </a>
             </div>
             <p className="mt-5 mb-0 flex items-center gap-2 text-base text-[#8a8997]">
               <svg className="h-4 w-4 fill-none stroke-[#58a887] stroke-2 stroke-linecap-round stroke-linejoin-round" viewBox="0 0 20 20" aria-hidden="true">
@@ -194,7 +201,7 @@ function TopView() {
           ))}
         </section>
 
-        <section className="bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
+        <section className="scroll-mt-24 bg-[#f9f8fc] px-5 py-16 md:px-8 md:py-20 lg:px-20 lg:py-24" aria-labelledby="top-usage-title"  id="how-to-use">
           <div className="mx-auto max-w-7xl">
             <div className="mx-auto mb-7 max-w-2xl text-center md:mb-10">
               <span className="text-base font-extrabold tracking-widest text-[#7564d7]">HOW IT WORKS</span>
@@ -263,7 +270,7 @@ function TopView() {
           <span className="text-base font-extrabold tracking-widest text-[#7564d7]">LESS SEARCHING, MORE CREATING</span>
           <h2 className="mt-4 mb-3 text-3xl leading-relaxed tracking-tight md:text-4xl">探す時間を減らして、<br />いい仕事に集中しよう。</h2>
           <p className="mt-0 mb-6 text-base text-[#858292]">あなたのプロンプトを、頼れる仕事道具に。</p>
-          <PrimaryButton>無料で始める <span aria-hidden="true">→</span></PrimaryButton>
+          <PrimaryButton>無料で始める</PrimaryButton>
         </section>
       </main>
     </div>
