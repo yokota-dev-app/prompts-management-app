@@ -20,6 +20,7 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -60,6 +61,12 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   }, [menuOpen, onMenuOpenChange]);
 
   useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -84,7 +91,8 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
       await navigator.clipboard.writeText(content);
       setCopied(true);
       onCopyError?.(false);
-      window.setTimeout(() => setCopied(false), 1800);
+      if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = window.setTimeout(() => setCopied(false), 1800);
     } catch {
       onCopyError?.(true);
       setCopied(false);
@@ -113,24 +121,35 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
 
   return (
     <div className="flex flex-[0_0_auto] items-center gap-1" onClick={(event) => event.stopPropagation()}>
-      <button
-        className={`${iconButtonClasses} flex-[0_0_2rem] [&_svg]:h-4 [&_svg]:w-4`}
-        type="button"
-        onClick={copyPrompt}
-        aria-label={`「${title}」のプロンプト内容をコピー`}
-        title={copied ? 'コピーしました' : 'プロンプトをコピー'}
-      >
-        {copied ? (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m5 12 4 4L19 6" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="8" y="8" width="12" height="12" rx="2" />
-            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-          </svg>
+      <div className="group relative h-8 w-8 flex-[0_0_2rem]">
+        <button
+          className={`${iconButtonClasses} [&_svg]:h-4 [&_svg]:w-4`}
+          type="button"
+          onClick={copyPrompt}
+          aria-label={`「${title}」のプロンプト内容をコピー`}
+        >
+          {copied ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 4 4L19 6" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="8" y="8" width="12" height="12" rx="2" />
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+            </svg>
+          )}
+        </button>
+        {!copied && (
+          <span className="pointer-events-none absolute right-full top-1/2 z-10 mr-2 -translate-y-1/2 whitespace-nowrap rounded-md border border-solid border-[#e9e7ed] bg-[#f3f1f8] px-2 py-1 text-xs font-bold text-[#85828c] opacity-0 transition-opacity group-hover:delay-1000 group-hover:opacity-100 group-focus-within:delay-1000 group-focus-within:opacity-100" role="tooltip">
+            プロンプトをコピー
+          </span>
         )}
-      </button>
+        {copied && (
+          <span className="absolute right-full top-1/2 mr-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#e8f7ed] px-2 py-1 text-xs font-bold text-[#1f9d5d]" role="status" aria-live="polite">
+            コピーしました！
+          </span>
+        )}
+      </div>
       <div className="relative" ref={menuRef}>
         <button
           className="grid h-8 w-8 place-items-center rounded-lg border border-solid border-transparent bg-transparent text-[#696572] hover:border-[#e9e7ed] hover:bg-[#faf9fc] hover:text-[#382569] aria-expanded:border-[#e9e7ed] aria-expanded:bg-[#faf9fc] aria-expanded:text-[#382569] [&_svg]:h-5 [&_svg]:w-5 [&_svg]:fill-current cursor-pointer"
