@@ -68,6 +68,7 @@ function PromptDetail({ id }: { id: string }) {
           promptId={prompt.id}
           title={prompt.title}
           content={showRaw ? prompt.content : appliedContent}
+          size="large"
           onCopyError={setCopyFailed}
           onDeleted={() => navigate('/mypage')}
         />

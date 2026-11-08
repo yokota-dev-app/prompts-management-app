@@ -7,23 +7,26 @@ interface PromptActionsProps {
   promptId: number;
   title: string;
   content: string;
+  size?: 'default' | 'large';
   onMenuOpenChange?: (open: boolean) => void;
   onCopyError?: (failed: boolean) => void;
   onDeleted?: () => void;
 }
 
-const iconButtonClasses = 'grid h-8 w-8 place-items-center rounded-lg border border-solid border-[#e9e7ed] bg-white text-[#696572] hover:border-[#c9c0dc] hover:text-[#382569] [&_svg]:fill-none [&_svg]:stroke-current [&_svg]:[stroke-linecap:round] [&_svg]:[stroke-linejoin:round] [&_svg]:stroke-2 cursor-pointer';
+const iconButtonClasses = 'grid place-items-center rounded-lg border border-solid border-[#d5d0df] bg-white text-[#696572] [box-shadow:0_1px_2px_rgb(36_28_55/10%)] hover:border-[#b9afcd] hover:bg-[#faf9fc] hover:text-[#382569] [&_svg]:fill-none [&_svg]:stroke-current [&_svg]:[stroke-linecap:round] [&_svg]:[stroke-linejoin:round] [&_svg]:stroke-2 cursor-pointer';
 const menuItemClasses = 'rounded-md border-0 bg-transparent px-2.5 py-2 text-left text-[#45424d] text-sm [font-family:inherit] hover:bg-[#f5f3f8] focus-visible:bg-[#f5f3f8] focus-visible:[outline:none] cursor-pointer';
 const dialogButtonClasses = 'h-10 min-w-22 rounded-lg border-0 text-sm cursor-pointer';
 
-export default function PromptActions({ promptId, title, content, onMenuOpenChange, onCopyError, onDeleted }: PromptActionsProps) {
+export default function PromptActions({ promptId, title, content, size = 'default', onMenuOpenChange, onCopyError, onDeleted }: PromptActionsProps) {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const copyTimerRef = useRef<number | null>(null);
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const isLarge = size === 'large';
 
   const closeConfirm = () => {
     if (deleting) return;
@@ -60,6 +63,12 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   }, [menuOpen, onMenuOpenChange]);
 
   useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -84,7 +93,8 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
       await navigator.clipboard.writeText(content);
       setCopied(true);
       onCopyError?.(false);
-      window.setTimeout(() => setCopied(false), 1800);
+      if (copyTimerRef.current !== null) window.clearTimeout(copyTimerRef.current);
+      copyTimerRef.current = window.setTimeout(() => setCopied(false), 1800);
     } catch {
       onCopyError?.(true);
       setCopied(false);
@@ -92,7 +102,6 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   };
 
   const menuItems = [
-    { label: 'ピン留め', onSelect: () => setMenuOpen(false), destructive: false },
     {
       label: '編集',
       onSelect: () => {
@@ -113,27 +122,38 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
 
   return (
     <div className="flex flex-[0_0_auto] items-center gap-1" onClick={(event) => event.stopPropagation()}>
-      <button
-        className={`${iconButtonClasses} flex-[0_0_2rem] [&_svg]:h-4 [&_svg]:w-4`}
-        type="button"
-        onClick={copyPrompt}
-        aria-label={`「${title}」のプロンプト内容をコピー`}
-        title={copied ? 'コピーしました' : 'プロンプトをコピー'}
-      >
-        {copied ? (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m5 12 4 4L19 6" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="8" y="8" width="12" height="12" rx="2" />
-            <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
-          </svg>
+      <div className={`group relative ${isLarge ? 'h-10 w-10 flex-[0_0_2.5rem]' : 'h-8 w-8 flex-[0_0_2rem]'}`}>
+        <button
+          className={`${iconButtonClasses} ${isLarge ? 'h-10 w-10 [&_svg]:h-5 [&_svg]:w-5' : 'h-8 w-8 [&_svg]:h-4 [&_svg]:w-4'}`}
+          type="button"
+          onClick={copyPrompt}
+          aria-label={`「${title}」のプロンプト内容をコピー`}
+        >
+          {copied ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 4 4L19 6" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="8" y="8" width="12" height="12" rx="2" />
+              <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+            </svg>
+          )}
+        </button>
+        {!copied && (
+          <span className="pointer-events-none absolute right-full top-1/2 z-10 mr-2 -translate-y-1/2 whitespace-nowrap rounded-md border border-solid border-[#e9e7ed] bg-[#f3f1f8] px-2 py-1 text-xs font-bold text-[#85828c] opacity-0 transition-opacity group-hover:delay-1000 group-hover:opacity-100 group-focus-within:delay-1000 group-focus-within:opacity-100" role="tooltip">
+            プロンプトをコピー
+          </span>
         )}
-      </button>
+        {copied && (
+          <span className="absolute right-full top-1/2 mr-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#e8f7ed] px-2 py-1 text-xs font-bold text-[#1f9d5d]" role="status" aria-live="polite">
+            コピーしました！
+          </span>
+        )}
+      </div>
       <div className="relative" ref={menuRef}>
         <button
-          className="grid h-8 w-8 place-items-center rounded-lg border border-solid border-transparent bg-transparent text-[#696572] hover:border-[#e9e7ed] hover:bg-[#faf9fc] hover:text-[#382569] aria-expanded:border-[#e9e7ed] aria-expanded:bg-[#faf9fc] aria-expanded:text-[#382569] [&_svg]:h-5 [&_svg]:w-5 [&_svg]:fill-current cursor-pointer"
+          className={`grid ${isLarge ? 'h-10 w-10 [&_svg]:h-6 [&_svg]:w-6' : 'h-8 w-8 [&_svg]:h-5 [&_svg]:w-5'} place-items-center rounded-lg border border-solid border-[#d5d0df] bg-white text-[#696572] [box-shadow:0_1px_2px_rgb(36_28_55/10%)] hover:border-[#b9afcd] hover:bg-[#faf9fc] hover:text-[#382569] aria-expanded:border-[#b9afcd] aria-expanded:bg-[#faf9fc] aria-expanded:text-[#382569] [&_svg]:fill-current cursor-pointer`}
           type="button"
           aria-label={`${title}のメニュー`}
           aria-haspopup="menu"
@@ -147,7 +167,7 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
           </svg>
         </button>
         {menuOpen && (
-          <div className="absolute right-0 top-full mt-1 z-[3] grid w-36 rounded-lg border border-solid border-[#e9e7ed] bg-white p-1 [box-shadow:0_8px_22px_rgb(36_28_55/14%)]" role="menu" aria-label={`${title}の操作`}>
+          <div className="absolute right-0 top-full mt-1 z-[3] grid w-24 rounded-lg border border-solid border-[#e9e7ed] bg-white p-1 [box-shadow:0_8px_22px_rgb(36_28_55/14%)]" role="menu" aria-label={`${title}の操作`}>
             {menuItems.map(({ label, onSelect, destructive }) => (
               <button
                 key={label}
