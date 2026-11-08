@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
 import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
-import topHeroImage from "../../assets/images/top_hero.jpg";
+import arriveImage from "../../assets/images/characters/arrive.jpg";
+import topHeroImage from "../../assets/images/characters/use_image.jpg";
 
 const buttonClasses =
   "inline-flex items-center justify-center gap-3 whitespace-nowrap rounded-lg border border-solid border-transparent text-sm font-bold transition duration-200 hover:-translate-y-px";
@@ -46,20 +47,70 @@ const usageSteps = [
   },
 ];
 
-function PrimaryButton({ children }: { children: ReactNode }) {
+function PrimaryButton({
+  children,
+  showArrivalCharacter,
+}: {
+  children: ReactNode;
+  showArrivalCharacter?: boolean;
+}) {
   return (
-    <Link
-      className={`${buttonClasses} ${primaryButtonClasses} min-h-13 px-5 sm:px-6`}
-      to="/signup"
-    >
-      {children}
-    </Link>
+    <span className="relative isolate inline-flex">
+      {showArrivalCharacter !== undefined && (
+        // ボタン右端・縦中央を基準点にし、基準点より左側だけをクリップする
+        <span
+          className="pointer-events-none absolute top-1/2 left-full z-0 h-0 w-0 [clip-path:inset(-100vh_-100vw_-100vh_0)]"
+          aria-hidden="true"
+        >
+          {/* スライド担当（横移動のみ）。h-16 の半分の -mt-8 で縦中央に揃える */}
+          <span
+            className="absolute top-0 left-0 -mt-8 block h-16 w-16 transition-transform duration-500 ease-out motion-reduce:transition-none"
+            style={{
+              transform: `translateX(${showArrivalCharacter ? "-1.1rem" : "-100%"})`,
+            }}
+          >
+            {/* 回転担当 */}
+            <img
+              className="block h-full w-full rotate-90 object-contain"
+              src={arriveImage}
+              alt=""
+            />
+          </span>
+        </span>
+      )}
+      <Link
+        className={`${buttonClasses} ${primaryButtonClasses} relative z-10 min-h-13 px-5 sm:px-6`}
+        to="/signup"
+      >
+        {children}
+      </Link>
+    </span>
   );
 }
 
 function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
+  const [showArrivalCharacter, setShowArrivalCharacter] = useState(false);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    let appearanceTimeout: number;
+    let hideTimeout: number;
+
+    const showCharacter = () => {
+      setShowArrivalCharacter(true);
+      hideTimeout = window.setTimeout(() => {
+        setShowArrivalCharacter(false);
+        appearanceTimeout = window.setTimeout(showCharacter, 10000);
+      }, 5000);
+    };
+
+    appearanceTimeout = window.setTimeout(showCharacter, 10000);
+    return () => {
+      window.clearTimeout(appearanceTimeout);
+      window.clearTimeout(hideTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     const dialog = imageDialogRef.current;
@@ -96,7 +147,7 @@ function TopView() {
               変数設定とワンクリックコピーで必要なときにすぐ使えます。
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-5">
-              <PrimaryButton>
+              <PrimaryButton showArrivalCharacter={showArrivalCharacter}>
                 無料で始める
                 <span aria-hidden="true">→</span>
               </PrimaryButton>
