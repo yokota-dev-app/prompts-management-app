@@ -35,12 +35,7 @@ export default function Header() {
       <header className={HEADER}>
         <Link className={BRAND} to="/" aria-label="Prompts ホーム">
           <span className={BRAND_MARK} aria-hidden="true">
-            <svg className="h-full w-full" viewBox="0 0 40 40" role="img">
-              <rect className="fill-(--top-purple)" x="3" y="3" width="34" height="34" rx="11" />
-              <path className="fill-white" d="M11 8.5h10l5 5v18H11z" />
-              <path className="fill-none stroke-[#8a78e8] stroke-[1.4] stroke-linecap-round stroke-linejoin-round" d="M21 8.5v5h5M14.5 18h8M14.5 22h8M14.5 26h5" />
-              <path className="fill-[#ffe08a]" d="m30.5 7 .9 3.1 3.1.9-3.1.9-.9 3.1-.9-3.1-3.1-.9 3.1-.9z" />
-            </svg>
+            <img className="h-full w-full" src="/favicon.svg" alt="" />
           </span>
           <span>Prompts</span>
         </Link>
