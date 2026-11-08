@@ -1,5 +1,3 @@
-import type { IncomingMessage, ServerResponse } from 'node:http';
-
 const HOP_BY_HOP_HEADERS = new Set([
   'connection',
   'content-length',
@@ -13,20 +11,16 @@ const HOP_BY_HOP_HEADERS = new Set([
   'upgrade',
 ]);
 
-export default async function handler(req: IncomingMessage, res: ServerResponse) {
+async function handler(request: Request): Promise<Response> {
   const backendUrl = process.env.BACKEND_URL;
   if (!backendUrl) {
     console.error('BACKEND_URL is not configured for the Vercel API proxy');
-    res.statusCode = 500;
-    res.end('API proxy is not configured');
-    return;
+    return new Response('API proxy is not configured', { status: 500 });
   }
 
-  const requestUrl = new URL(req.url ?? '/', 'https://vercel.local');
+  const requestUrl = new URL(request.url);
   if (requestUrl.pathname !== '/api/v1' && !requestUrl.pathname.startsWith('/api/v1/')) {
-    res.statusCode = 404;
-    res.end('Not found');
-    return;
+    return new Response('Not found', { status: 404 });
   }
 
   let upstreamBaseUrl: URL;
@@ -34,9 +28,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     upstreamBaseUrl = new URL(backendUrl);
   } catch (error) {
     console.error('BACKEND_URL must be a valid HTTPS origin', error);
-    res.statusCode = 500;
-    res.end('API proxy is misconfigured');
-    return;
+    return new Response('API proxy is misconfigured', { status: 500 });
   }
 
   if (
@@ -46,60 +38,56 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     upstreamBaseUrl.hash
   ) {
     console.error('BACKEND_URL must be an HTTPS origin without a path, query, or fragment');
-    res.statusCode = 500;
-    res.end('API proxy is misconfigured');
-    return;
+    return new Response('API proxy is misconfigured', { status: 500 });
   }
 
   const upstreamUrl = new URL(`${requestUrl.pathname}${requestUrl.search}`, upstreamBaseUrl);
   const headers = new Headers();
-  for (const [name, value] of Object.entries(req.headers)) {
-    if (!HOP_BY_HOP_HEADERS.has(name) && value !== undefined) {
-      headers.set(name, Array.isArray(value) ? value.join(', ') : value);
+  request.headers.forEach((value, name) => {
+    if (!HOP_BY_HOP_HEADERS.has(name)) {
+      headers.set(name, value);
     }
-  }
+  });
 
   try {
-    const method = req.method ?? 'GET';
-    const chunks: Buffer[] = [];
-    if (method !== 'GET' && method !== 'HEAD') {
-      for await (const chunk of req) {
-        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-      }
-    }
-
+    const method = request.method.toUpperCase();
+    const body =
+      method === 'GET' || method === 'HEAD'
+        ? undefined
+        : await request.arrayBuffer();
     const upstreamResponse = await fetch(upstreamUrl, {
       method,
       headers,
-      body: chunks.length > 0 ? Buffer.concat(chunks) : undefined,
+      body,
     });
 
-    res.statusCode = upstreamResponse.status;
+    const responseHeaders = new Headers();
     upstreamResponse.headers.forEach((value, name) => {
       if (name !== 'set-cookie' && !HOP_BY_HOP_HEADERS.has(name)) {
-        res.setHeader(name, value);
+        responseHeaders.set(name, value);
       }
     });
+    upstreamResponse.headers.getSetCookie().forEach((cookie) => {
+      responseHeaders.append('set-cookie', cookie);
+    });
 
-    const cookies = upstreamResponse.headers.getSetCookie();
-    if (cookies.length > 0) {
-      res.setHeader('Set-Cookie', cookies);
-    }
-
-    res.end(
+    const responseBody =
       method === 'HEAD' || upstreamResponse.status === 204 || upstreamResponse.status === 304
-        ? undefined
-        : Buffer.from(await upstreamResponse.arrayBuffer()),
-    );
+        ? null
+        : await upstreamResponse.arrayBuffer();
+
+    return new Response(responseBody, {
+      status: upstreamResponse.status,
+      headers: responseHeaders,
+    });
   } catch (error) {
     console.error('Vercel API proxy request failed', {
-      method: req.method,
+      method: request.method,
       path: requestUrl.pathname,
       error,
     });
-    if (!res.headersSent) {
-      res.statusCode = 502;
-      res.end('API request failed');
-    }
+    return new Response('API request failed', { status: 502 });
   }
 }
+
+export default { fetch: handler };
