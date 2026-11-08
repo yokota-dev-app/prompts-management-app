@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import step1Image from "../../assets/images/step1_create_prompt.png";
 import step2Image from "../../assets/images/step2_copy_prompt_and_jump_to_link.png";
 import arriveImage from "../../assets/images/characters/arrive.jpg";
@@ -98,15 +98,17 @@ function TopView() {
   const [activeImage, setActiveImage] = useState<(typeof usageSteps)[number] | null>(null);
   const imageDialogRef = useRef<HTMLDialogElement>(null);
   const { hash } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (hash !== "#how-to-use") return;
 
     const scrollFrame = window.requestAnimationFrame(() => {
       document.getElementById("how-to-use")?.scrollIntoView({ behavior: "smooth" });
+      navigate("/", { replace: true });
     });
     return () => window.cancelAnimationFrame(scrollFrame);
-  }, [hash]);
+  }, [hash, navigate]);
 
   useEffect(() => {
     const dialog = imageDialogRef.current;
