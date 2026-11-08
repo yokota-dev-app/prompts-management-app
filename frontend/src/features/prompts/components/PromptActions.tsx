@@ -7,16 +7,17 @@ interface PromptActionsProps {
   promptId: number;
   title: string;
   content: string;
+  size?: 'default' | 'large';
   onMenuOpenChange?: (open: boolean) => void;
   onCopyError?: (failed: boolean) => void;
   onDeleted?: () => void;
 }
 
-const iconButtonClasses = 'grid h-8 w-8 place-items-center rounded-lg border border-solid border-[#e9e7ed] bg-white text-[#696572] hover:border-[#c9c0dc] hover:text-[#382569] [&_svg]:fill-none [&_svg]:stroke-current [&_svg]:[stroke-linecap:round] [&_svg]:[stroke-linejoin:round] [&_svg]:stroke-2 cursor-pointer';
+const iconButtonClasses = 'grid place-items-center rounded-lg border border-solid border-[#d5d0df] bg-white text-[#696572] [box-shadow:0_1px_2px_rgb(36_28_55/10%)] hover:border-[#b9afcd] hover:bg-[#faf9fc] hover:text-[#382569] [&_svg]:fill-none [&_svg]:stroke-current [&_svg]:[stroke-linecap:round] [&_svg]:[stroke-linejoin:round] [&_svg]:stroke-2 cursor-pointer';
 const menuItemClasses = 'rounded-md border-0 bg-transparent px-2.5 py-2 text-left text-[#45424d] text-sm [font-family:inherit] hover:bg-[#f5f3f8] focus-visible:bg-[#f5f3f8] focus-visible:[outline:none] cursor-pointer';
 const dialogButtonClasses = 'h-10 min-w-22 rounded-lg border-0 text-sm cursor-pointer';
 
-export default function PromptActions({ promptId, title, content, onMenuOpenChange, onCopyError, onDeleted }: PromptActionsProps) {
+export default function PromptActions({ promptId, title, content, size = 'default', onMenuOpenChange, onCopyError, onDeleted }: PromptActionsProps) {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -25,6 +26,7 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const isLarge = size === 'large';
 
   const closeConfirm = () => {
     if (deleting) return;
@@ -100,7 +102,6 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
   };
 
   const menuItems = [
-    { label: 'ピン留め', onSelect: () => setMenuOpen(false), destructive: false },
     {
       label: '編集',
       onSelect: () => {
@@ -121,9 +122,9 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
 
   return (
     <div className="flex flex-[0_0_auto] items-center gap-1" onClick={(event) => event.stopPropagation()}>
-      <div className="group relative h-8 w-8 flex-[0_0_2rem]">
+      <div className={`group relative ${isLarge ? 'h-10 w-10 flex-[0_0_2.5rem]' : 'h-8 w-8 flex-[0_0_2rem]'}`}>
         <button
-          className={`${iconButtonClasses} [&_svg]:h-4 [&_svg]:w-4`}
+          className={`${iconButtonClasses} ${isLarge ? 'h-10 w-10 [&_svg]:h-5 [&_svg]:w-5' : 'h-8 w-8 [&_svg]:h-4 [&_svg]:w-4'}`}
           type="button"
           onClick={copyPrompt}
           aria-label={`「${title}」のプロンプト内容をコピー`}
@@ -152,7 +153,7 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
       </div>
       <div className="relative" ref={menuRef}>
         <button
-          className="grid h-8 w-8 place-items-center rounded-lg border border-solid border-transparent bg-transparent text-[#696572] hover:border-[#e9e7ed] hover:bg-[#faf9fc] hover:text-[#382569] aria-expanded:border-[#e9e7ed] aria-expanded:bg-[#faf9fc] aria-expanded:text-[#382569] [&_svg]:h-5 [&_svg]:w-5 [&_svg]:fill-current cursor-pointer"
+          className={`grid ${isLarge ? 'h-10 w-10 [&_svg]:h-6 [&_svg]:w-6' : 'h-8 w-8 [&_svg]:h-5 [&_svg]:w-5'} place-items-center rounded-lg border border-solid border-[#d5d0df] bg-white text-[#696572] [box-shadow:0_1px_2px_rgb(36_28_55/10%)] hover:border-[#b9afcd] hover:bg-[#faf9fc] hover:text-[#382569] aria-expanded:border-[#b9afcd] aria-expanded:bg-[#faf9fc] aria-expanded:text-[#382569] [&_svg]:fill-current cursor-pointer`}
           type="button"
           aria-label={`${title}のメニュー`}
           aria-haspopup="menu"
@@ -166,7 +167,7 @@ export default function PromptActions({ promptId, title, content, onMenuOpenChan
           </svg>
         </button>
         {menuOpen && (
-          <div className="absolute right-0 top-full mt-1 z-[3] grid w-36 rounded-lg border border-solid border-[#e9e7ed] bg-white p-1 [box-shadow:0_8px_22px_rgb(36_28_55/14%)]" role="menu" aria-label={`${title}の操作`}>
+          <div className="absolute right-0 top-full mt-1 z-[3] grid w-24 rounded-lg border border-solid border-[#e9e7ed] bg-white p-1 [box-shadow:0_8px_22px_rgb(36_28_55/14%)]" role="menu" aria-label={`${title}の操作`}>
             {menuItems.map(({ label, onSelect, destructive }) => (
               <button
                 key={label}
