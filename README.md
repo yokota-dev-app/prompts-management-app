@@ -257,6 +257,6 @@
 
 ## 12. 本番環境のAPI接続
 - Vercelの環境変数 `BACKEND_URL` にRenderのWebサービスのオリジン（例：`https://<service>.onrender.com`）を設定する。末尾に `/api/v1` やパスを付けない。
-- 本番フロントエンドは `/api/v1` へ同一オリジンでリクエストし、`frontend/api/v1/[...path].ts` がRenderへ転送する。セッションCookieもこのプロキシ経由で送受信される。
+- 本番フロントエンドは `/api/v1` へ同一オリジンでリクエストし、`frontend/vercel.json` のrewriteで `frontend/api/index.ts` に集約してRenderへ転送する。セッションCookieもこのプロキシ経由で送受信される。
 - `VITE_API_BASE_URL` はローカル開発用。本番ビルドでは使用しない。
 - `BACKEND_URL` 設定後、Vercelを再デプロイする。

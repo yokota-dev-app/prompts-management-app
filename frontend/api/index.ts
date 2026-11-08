@@ -19,7 +19,8 @@ async function handler(request: Request): Promise<Response> {
   }
 
   const requestUrl = new URL(request.url);
-  if (requestUrl.pathname !== '/api/v1' && !requestUrl.pathname.startsWith('/api/v1/')) {
+  const apiPath = requestUrl.searchParams.get('_proxy_path');
+  if (!apiPath || (apiPath !== '/api/v1' && !apiPath.startsWith('/api/v1/'))) {
     return new Response('Not found', { status: 404 });
   }
 
@@ -41,7 +42,13 @@ async function handler(request: Request): Promise<Response> {
     return new Response('API proxy is misconfigured', { status: 500 });
   }
 
-  const upstreamUrl = new URL(`${requestUrl.pathname}${requestUrl.search}`, upstreamBaseUrl);
+  const upstreamUrl = new URL(apiPath, upstreamBaseUrl);
+  requestUrl.searchParams.forEach((value, name) => {
+    if (name !== '_proxy_path') {
+      upstreamUrl.searchParams.append(name, value);
+    }
+  });
+
   const headers = new Headers();
   request.headers.forEach((value, name) => {
     if (!HOP_BY_HOP_HEADERS.has(name)) {
@@ -83,7 +90,7 @@ async function handler(request: Request): Promise<Response> {
   } catch (error) {
     console.error('Vercel API proxy request failed', {
       method: request.method,
-      path: requestUrl.pathname,
+      path: apiPath,
       error,
     });
     return new Response('API request failed', { status: 502 });
