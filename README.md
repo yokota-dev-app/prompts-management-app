@@ -256,8 +256,7 @@
 [![Image from Gyazo](https://i.gyazo.com/cbd6a55a8245ea1664283920c481933d.png)](https://gyazo.com/cbd6a55a8245ea1664283920c481933d)
 
 ## 12. 本番環境のAPI接続
-- VercelプロジェクトのRoot Directoryを `frontend` にする。
-- Vercelの `BACKEND_URL` をProductionとPreviewの両環境に設定する。値はRenderのWebサービスURL（例：`https://<service>.onrender.com` または `https://<service>.onrender.com/api/v1`）。`/api/v1` の後に追加のパスやクエリは付けない。
-- `frontend/vercel.ts` がVercelのビルド時に `/api/v1/*` をRenderへ直接rewriteする。APIは同一オリジンURLのままで、リクエストメソッドとCookieをRenderへ中継する。
+- Vercelの環境変数 `BACKEND_URL` にRenderのWebサービスのURL（例：`https://<service>.onrender.com` または `https://<service>.onrender.com/api/v1`）を設定する。`/api/v1` の後に追加のパスやクエリは付けない。
+- 本番フロントエンドは `/api/v1` へ同一オリジンでリクエストし、`frontend/vercel.json` のrewriteで `frontend/api/index.ts` に集約してRenderへ転送する。セッションCookieもこのプロキシ経由で送受信される。
 - `VITE_API_BASE_URL` はローカル開発用。本番ビルドでは使用しない。
-- `BACKEND_URL` の設定後、ProductionとPreviewの両方を再デプロイする。
+- `BACKEND_URL` 設定後、Vercelを再デプロイする。
