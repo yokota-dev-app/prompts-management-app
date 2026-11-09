@@ -34,11 +34,11 @@ async function handler(request: Request): Promise<Response> {
 
   if (
     upstreamBaseUrl.protocol !== 'https:' ||
-    upstreamBaseUrl.pathname !== '/' ||
+    !['/', '/api/v1', '/api/v1/'].includes(upstreamBaseUrl.pathname) ||
     upstreamBaseUrl.search ||
     upstreamBaseUrl.hash
   ) {
-    console.error('BACKEND_URL must be an HTTPS origin without a path, query, or fragment');
+    console.error('BACKEND_URL must be an HTTPS origin, optionally ending in /api/v1');
     return new Response('API proxy is misconfigured', { status: 500 });
   }
 
